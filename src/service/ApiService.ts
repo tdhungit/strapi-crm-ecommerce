@@ -6,19 +6,37 @@ class ApiService {
   async request(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,
-    data?: any
+    data?: any,
+    headers?: any
   ) {
-    const res = await axios.request({
-      method,
-      baseURL: this.API_URL + '/api' + url,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      data: method === 'POST' || method === 'PUT' ? data : undefined,
-      params: method === 'GET' ? data : undefined,
+    try {
+      const res = await axios.request({
+        method,
+        baseURL: this.API_URL + '/api' + url,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...headers,
+        },
+        data: method === 'POST' || method === 'PUT' ? data : undefined,
+        params: method === 'GET' ? data : undefined,
+      });
+      return res.data;
+    } catch (err: any) {
+      throw err.response?.data?.error || err;
+    }
+  }
+
+  async requestWithAuth(
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    url: string,
+    data?: any,
+    headers?: any
+  ) {
+    return this.request(method, url, data, {
+      ...headers,
+      Authorization: `Token ${localStorage.getItem('token')}`,
     });
-    return res.data;
   }
 
   async getStaticPage(slug: string) {

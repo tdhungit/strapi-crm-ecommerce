@@ -5,18 +5,23 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import ApiService from '@/service/ApiService';
 import { AlertCircle } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 export default function Login() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+
+  const returnTo = searchParams.get('returnTo');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,24 +40,18 @@ export default function Login() {
 
     try {
       setIsLoading(true);
-      // TODO: Replace with your actual authentication API call
-      // const response = await fetch("/api/auth/login", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ email, password, rememberMe }),
-      // });
-      // const data = await response.json();
-      // if (!response.ok) throw new Error(data.message || "Login failed");
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const res = await ApiService.request('POST', '/customers/contact/login', {
+        email,
+        password,
+      });
+
+      localStorage.setItem('token', res.jwt);
 
       // Redirect to dashboard on successful login
-      router.push('/dashboard');
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An error occurred during login'
-      );
+      router.push(returnTo || '/');
+    } catch (err: any) {
+      setError(err.message || 'An error occurred during login');
     } finally {
       setIsLoading(false);
     }

@@ -1,6 +1,5 @@
 import { getGlobalSettings } from '@/lib/settings';
 import { getMediaUrl } from '@/lib/utils';
-import ApiService from '@/service/ApiService';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import Footer from './components/layouts/Footer';
@@ -41,8 +40,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const categories = await ApiService.request('GET', '/product-categories');
-
   return (
     <html lang='en'>
       <body
@@ -50,7 +47,7 @@ export default async function RootLayout({
       >
         <ReduxProvider>
           <div className='bg-gray-200 min-h-screen grid grid-rows-[auto_1fr_auto]'>
-            <Header globalSettings={globalSettings} categories={categories} />
+            <Header globalSettings={globalSettings} />
             <main className='container mx-auto m-6 overflow-hidden'>
               {children}
             </main>

@@ -1,27 +1,45 @@
 'use client';
 
 import { GlobalSettingType } from '@/lib/settings';
+import ApiService from '@/service/ApiService';
+import UserService from '@/service/UserService';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import NavLink from '../NavLink';
 import WarehouseSelect from './WarehouseSelect';
 
 export default function Header({
   globalSettings,
-  categories,
 }: {
   globalSettings: GlobalSettingType;
-  categories?: { data: any[] };
 }) {
-  const links = [{ href: '/', label: 'Home' }];
-  if (categories?.data && categories.data.length > 0) {
-    categories.data.forEach((category) => {
-      links.push({
-        href: `/category/${category.slug}/${category.id}`,
-        label: category.name,
-      });
+  const [links, setLinks] = useState<{ href: string; label: string }[]>([]);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    ApiService.request('GET', '/product-categories').then((categories: any) => {
+      const _links = [{ href: '/', label: 'Home' }];
+      if (categories?.data && categories.data.length > 0) {
+        categories.data.forEach((category: any) => {
+          _links.push({
+            href: `/category/${category.slug}/${category.id}`,
+            label: category.name,
+          });
+        });
+      }
+      _links.push({ href: '/about-us', label: 'About Us' });
+
+      setLinks(_links);
     });
-  }
-  links.push({ href: '/about-us', label: 'About Us' });
+
+    if (UserService.isLogin()) {
+      ApiService.requestWithAuth('GET', '/customers/contact/me').then(
+        (user: any) => {
+          setUser(user);
+        }
+      );
+    }
+  }, []);
 
   return (
     <header className='bg-white/50'>
