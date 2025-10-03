@@ -2,10 +2,28 @@ import ProductImages from '@/app/components/ProductImages';
 import ProductDescription from '@/app/product/components/ProductDescription';
 import ApiService from '@/service/ApiService';
 import dayjs from 'dayjs';
+import { ResolvingMetadata } from 'next';
 import ProductVariants from '../../components/ProductVariants';
 
 interface PageProps {
   params: Promise<{ slug: string; id: string }>;
+}
+
+export async function generateMetadata(
+  { params }: PageProps,
+  parent: ResolvingMetadata
+) {
+  const { slug, id } = await params;
+
+  const date = dayjs().format('YYYY-MM-DD');
+  const product = await ApiService.request('GET', `/sale-products/${id}`, {
+    date,
+  });
+
+  return {
+    title: product.name,
+    description: product.description,
+  };
 }
 
 export default async function ProductPage({ params }: PageProps) {

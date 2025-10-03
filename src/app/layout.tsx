@@ -21,7 +21,10 @@ const geistMono = Geist_Mono({
 const globalSettings = await getGlobalSettings();
 
 export const metadata: Metadata = {
-  title: globalSettings.title || 'Strapi CRM & E-Commerce',
+  title: {
+    template: '%s | ' + (globalSettings.title || 'Strapi CRM & E-Commerce'),
+    default: globalSettings.title || 'Strapi CRM & E-Commerce',
+  },
   description:
     globalSettings.description ||
     globalSettings.slogan ||
