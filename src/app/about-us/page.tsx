@@ -1,15 +1,13 @@
+import StaticPage from '@/app/components/StaticPage';
 import ApiService from '@/service/ApiService';
 
+const aboutUs = await ApiService.getStaticPage('about-us');
+
+export const metadata = {
+  title: 'About Us',
+  description: aboutUs.description || 'About Us',
+};
+
 export default async function AboutUs() {
-  const aboutUs = await ApiService.request('GET', '/about-us');
-
-  console.log(aboutUs);
-
-  return (
-    <div className='bg-white/50 rounded-xl py-7 px-8 overflow-hidden'>
-      <h1 className='text-2xl font-bold mb-5'>About Us</h1>
-
-      {aboutUs.data.description}
-    </div>
-  );
+  return <StaticPage page={aboutUs} />;
 }

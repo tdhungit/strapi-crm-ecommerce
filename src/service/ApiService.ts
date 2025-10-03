@@ -20,6 +20,18 @@ class ApiService {
     });
     return res.data;
   }
+
+  async getStaticPage(slug: string) {
+    const pages = await this.request('GET', '/static-pages', {
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+    });
+
+    return pages.data[0] || {};
+  }
 }
 
 export default new ApiService();
