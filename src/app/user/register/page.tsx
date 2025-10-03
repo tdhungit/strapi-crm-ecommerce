@@ -4,6 +4,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import ApiService from '@/service/ApiService';
 import { AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,23 +15,49 @@ export default function Register() {
     firstName: '',
     lastName: '',
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
   });
+  const router = useRouter();
+
+  const [emailError, setEmailError] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
+  const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) {
+      setEmailError('Email is required');
+      return;
+    }
+
+    ApiService.request('POST', '/customers/contact/check-email', {
+      email: e.target.value,
+    })
+      .then(() => {
+        setEmailError('');
+      })
+      .catch(() => {
+        setEmailError('Email already exists');
+      });
+  };
+
   const validateForm = () => {
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.confirmPassword) {
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.password ||
+      !formData.confirmPassword
+    ) {
       setError('All fields are required');
       return false;
     }
@@ -61,27 +88,19 @@ export default function Register() {
 
     try {
       setIsLoading(true);
-      // TODO: Replace with your actual registration API call
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     firstName: formData.firstName,
-      //     lastName: formData.lastName,
-      //     email: formData.email,
-      //     password: formData.password,
-      //   }),
-      // });
-      // const data = await response.json();
-      // if (!response.ok) throw new Error(data.message || 'Registration failed');
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await ApiService.request('POST', '/customers/contact/register', {
+        ...formData,
+      });
 
       // Redirect to login page after successful registration
       router.push('/user/login?registered=true');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred during registration');
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'An error occurred during registration'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -117,7 +136,9 @@ export default function Register() {
           <div className='space-y-4'>
             <div className='grid grid-cols-2 gap-4'>
               <div className='space-y-2'>
-                <Label htmlFor='firstName'>First name</Label>
+                <Label htmlFor='firstName'>
+                  First name <span className='text-red-500'>*</span>
+                </Label>
                 <Input
                   id='firstName'
                   name='firstName'
@@ -129,7 +150,9 @@ export default function Register() {
                 />
               </div>
               <div className='space-y-2'>
-                <Label htmlFor='lastName'>Last name</Label>
+                <Label htmlFor='lastName'>
+                  Last name <span className='text-red-500'>*</span>
+                </Label>
                 <Input
                   id='lastName'
                   name='lastName'
@@ -143,7 +166,9 @@ export default function Register() {
             </div>
 
             <div className='space-y-2'>
-              <Label htmlFor='email'>Email</Label>
+              <Label htmlFor='email'>
+                Email <span className='text-red-500'>*</span>
+              </Label>
               <Input
                 id='email'
                 name='email'
@@ -151,13 +176,33 @@ export default function Register() {
                 autoComplete='email'
                 required
                 value={formData.email}
-                onChange={handleChange}
                 placeholder='name@example.com'
+                className={emailError ? 'border-red-500' : ''}
+                onChange={handleChange}
+                onBlur={handleChangeEmail}
+              />
+              {emailError && (
+                <p className='text-xs text-red-500'>{emailError}</p>
+              )}
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='phone'>Phone</Label>
+              <Input
+                id='phone'
+                name='phone'
+                type='tel'
+                required
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder='123-456-7890'
               />
             </div>
 
             <div className='space-y-2'>
-              <Label htmlFor='password'>Password</Label>
+              <Label htmlFor='password'>
+                Password <span className='text-red-500'>*</span>
+              </Label>
               <Input
                 id='password'
                 name='password'
@@ -173,7 +218,9 @@ export default function Register() {
             </div>
 
             <div className='space-y-2'>
-              <Label htmlFor='confirmPassword'>Confirm Password</Label>
+              <Label htmlFor='confirmPassword'>
+                Confirm Password <span className='text-red-500'>*</span>
+              </Label>
               <Input
                 id='confirmPassword'
                 name='confirmPassword'
@@ -219,11 +266,17 @@ export default function Register() {
 
         <p className='px-8 text-center text-sm text-muted-foreground'>
           By clicking continue, you agree to our{' '}
-          <Link href='/terms' className='underline underline-offset-4 hover:text-primary'>
+          <Link
+            href='/terms'
+            className='underline underline-offset-4 hover:text-primary'
+          >
             Terms of Service
           </Link>{' '}
           and{' '}
-          <Link href='/privacy' className='underline underline-offset-4 hover:text-primary'>
+          <Link
+            href='/privacy'
+            className='underline underline-offset-4 hover:text-primary'
+          >
             Privacy Policy
           </Link>
           .
