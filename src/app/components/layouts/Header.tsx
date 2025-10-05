@@ -8,7 +8,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { GlobalSettingType } from '@/lib/settings';
-import { getMediaUrl } from '@/lib/utils';
+import { formatCurrency, getMediaUrl } from '@/lib/utils';
 import ApiService from '@/service/ApiService';
 import UserService from '@/service/UserService';
 import { ShoppingCart } from 'lucide-react';
@@ -46,8 +46,7 @@ function PopoverCart() {
       </PopoverTrigger>
       <PopoverContent className='w-[400px] p-0'>
         <div className='p-4'>
-          <h2 className='font-bold text-xl mb-2'>Cart</h2>
-          <div className='flex gap-2'>
+          <div className='flex flex-col gap-2'>
             {cart.map((item: any) => (
               <div key={item.id} className='flex gap-2'>
                 <img
@@ -56,16 +55,16 @@ function PopoverCart() {
                   className='w-16 h-16 object-cover'
                 />
                 <div className='flex-1'>
-                  <h3 className='font-bold'>{item.name}</h3>
+                  <h3 className='font-bold text-sm'>{item.name}</h3>
                   <p className='text-sm text-gray-500'>
-                    {item.cartQty} x ${item.price}
+                    {item.cartQty} x {formatCurrency(item.price)}
                   </p>
                 </div>
               </div>
             ))}
           </div>
           <div className='flex justify-between items-center mt-4'>
-            <p className='font-bold'>Total: ${total}</p>
+            <p className='font-bold'>Total: {formatCurrency(total)}</p>
             <button className='bg-primary text-white px-4 py-2 rounded'>
               Checkout
             </button>
