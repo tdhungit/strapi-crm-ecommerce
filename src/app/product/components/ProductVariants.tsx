@@ -1,6 +1,7 @@
 'use client';
 
 import AddToCartButton from '@/app/components/AddToCartButton';
+import { formatCurrency } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -18,7 +19,7 @@ export default function ProductVariants({ product }: Props) {
     <div className='bg-white p-4 rounded-xl'>
       <h2 className='font-bold text-xl mb-2'>Price</h2>
       <p className='text-2xl font-bold text-red-500'>
-        ${selectedVariant?.product_prices[0].price}
+        {formatCurrency(selectedVariant?.product_prices[0].price)}
       </p>
       <div className='flex gap-2'>
         {product.product_variants.map((variant: any) => (

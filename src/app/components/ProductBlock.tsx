@@ -1,5 +1,6 @@
 'use client';
 
+import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import ProductImages from './ProductImages';
 
@@ -20,7 +21,14 @@ export default function ProductBlock({ product }: { product: any }) {
           </Link>
         </h1>
         <p className='text-xs text-red-500 font-bold pt-1'>
-          ${product.from_price} - ${product.to_price}
+          {product.from_price === product.to_price ? (
+            formatCurrency(product.from_price)
+          ) : (
+            <>
+              {formatCurrency(product.from_price)} -{' '}
+              {formatCurrency(product.to_price)}
+            </>
+          )}
         </p>
       </div>
     </div>

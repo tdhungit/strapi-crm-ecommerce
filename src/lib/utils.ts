@@ -10,9 +10,11 @@ export function getMediaUrl(media: any) {
 }
 
 export function formatNumber(num: number) {
+  if (!num) return 0;
   return num.toLocaleString('en-US');
 }
 
 export function formatCurrency(num: number) {
+  if (!num) return '$0';
   return '$' + formatNumber(num);
 }
