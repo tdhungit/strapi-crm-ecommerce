@@ -4,7 +4,9 @@ export interface CartItem {
   id: number;
   name: string;
   price: number;
-  qty: number;
+  cartQty: number;
+  photos: any[];
+  sku: string;
 }
 
 interface CartState {
@@ -26,7 +28,7 @@ const cartSlice = createSlice({
       const item = action.payload;
       const existing = state.items.find((i) => i.id === item.id);
       if (existing) {
-        existing.qty += item.qty;
+        existing.cartQty += item.cartQty;
       } else {
         state.items.push(item);
       }
@@ -36,9 +38,12 @@ const cartSlice = createSlice({
       state.items = state.items.filter((i) => i.id !== action.payload);
       localStorage.setItem('cart', JSON.stringify(state.items));
     },
-    updateQty: (state, action: PayloadAction<{ id: number; qty: number }>) => {
+    updateQty: (
+      state,
+      action: PayloadAction<{ id: number; cartQty: number }>
+    ) => {
       const item = state.items.find((i) => i.id === action.payload.id);
-      if (item) item.qty = action.payload.qty;
+      if (item) item.cartQty = action.payload.cartQty;
       localStorage.setItem('cart', JSON.stringify(state.items));
     },
     clearCart: (state) => {

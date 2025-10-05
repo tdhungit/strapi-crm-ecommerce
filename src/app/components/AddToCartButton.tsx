@@ -6,14 +6,14 @@ import { toast } from 'sonner';
 import { addToCart } from '../stores/cartSlice';
 
 interface Props {
-  product: any;
+  variant: any;
 }
 
-export default function AddToCartButton({ product }: Props) {
+export default function AddToCartButton({ variant }: Props) {
   const dispatch = useDispatch();
 
   const handleAdd = () => {
-    dispatch(addToCart({ ...product, qty: 1 }));
+    dispatch(addToCart({ ...variant, cartQty: 1 }));
     toast.success('Product added to cart');
   };
 
