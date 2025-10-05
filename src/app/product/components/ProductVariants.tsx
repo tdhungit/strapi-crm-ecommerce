@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import AddToCartButton from '@/app/components/AddToCartButton';
 import { useEffect, useState } from 'react';
 
 interface Props {
@@ -39,7 +39,7 @@ export default function ProductVariants({ product }: Props) {
         ))}
       </div>
       <div className='mt-4 flex flex-col'>
-        <Button className='cursor-pointer'>Add to Cart</Button>
+        <AddToCartButton product={product} />
       </div>
     </div>
   );

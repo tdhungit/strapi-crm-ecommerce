@@ -42,7 +42,9 @@ export default async function ProductPage({ params }: PageProps) {
         <div className='flex-1'>
           <ProductImages product={product} width='100%' height='450px' />
 
-          <ProductDescription product={product} />
+          <div className='mt-2'>
+            <ProductDescription product={product} />
+          </div>
         </div>
         <div className='w-[450px]'>
           <ProductVariants product={product} />
