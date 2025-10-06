@@ -12,6 +12,7 @@ import { GlobalSettingType } from '@/lib/settings';
 import { formatCurrency, getMediaUrl } from '@/lib/utils';
 import ApiService from '@/service/ApiService';
 import UserService from '@/service/UserService';
+import { PopoverClose } from '@radix-ui/react-popover';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -67,9 +68,14 @@ function PopoverCart() {
           </div>
           <div className='flex justify-between items-center mt-4'>
             <p className='font-bold'>Total: {formatCurrency(total)}</p>
-            <button className='bg-primary text-white px-4 py-2 rounded'>
-              Checkout
-            </button>
+            <PopoverClose asChild>
+              <Link
+                href='/checkout'
+                className='bg-primary text-white px-4 py-2 rounded'
+              >
+                Checkout
+              </Link>
+            </PopoverClose>
           </div>
         </div>
       </PopoverContent>
