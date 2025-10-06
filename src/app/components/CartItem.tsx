@@ -1,6 +1,10 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { ButtonGroup } from '@/components/ui/button-group';
+import { Input } from '@/components/ui/input';
 import { formatCurrency, getMediaUrl } from '@/lib/utils';
+import { MinusIcon, PlusIcon } from 'lucide-react';
 
 interface ProductAttribute {
   id: number;
@@ -111,22 +115,22 @@ export default function CartItem({
         </div>
 
         <div className='mt-4 flex items-center justify-between'>
-          <div className='flex items-center border border-gray-300 rounded-md'>
-            <button
-              onClick={() => onQuantityChange(id, Math.max(1, cartQty - 1))}
-              className='px-3 py-1 text-gray-600 hover:bg-gray-100'
-              aria-label='Decrease quantity'
-            >
-              -
-            </button>
-            <span className='px-4 py-1 w-12 text-center'>{cartQty}</span>
-            <button
-              onClick={() => onQuantityChange(id, cartQty + 1)}
-              className='px-3 py-1 text-gray-600 hover:bg-gray-100'
-              aria-label='Increase quantity'
-            >
-              +
-            </button>
+          <div className='flex items-center gap-1'>
+            <ButtonGroup>
+              <Button
+                variant='outline'
+                onClick={() => onQuantityChange(id, Math.max(1, cartQty - 1))}
+              >
+                <MinusIcon />
+              </Button>
+              <Input value={cartQty} readOnly className='w-12 text-center' />
+              <Button
+                variant='outline'
+                onClick={() => onQuantityChange(id, cartQty + 1)}
+              >
+                <PlusIcon />
+              </Button>
+            </ButtonGroup>
           </div>
 
           <div className='text-right'>

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../components/layouts/Loading';
+import { removeFromCart, updateQty } from '../stores/cartSlice';
 
 export default function Checkout() {
   const router = useRouter();
@@ -31,15 +32,11 @@ export default function Checkout() {
   useEffect(() => setIsClient(true), []);
 
   const handleQuantityChange = (productId: number, newQty: number) => {
-    // Dispatch an action to update the cart quantity
-    // Example: dispatch(updateCartItemQuantity(productId, newQty));
-    console.log(`Update product ${productId} quantity to ${newQty}`);
+    dispatch(updateQty({ id: productId, cartQty: newQty }));
   };
 
   const handleRemoveItem = (productId: number) => {
-    // Dispatch an action to remove the item from cart
-    // Example: dispatch(removeFromCart(productId));
-    console.log(`Remove product ${productId} from cart`);
+    dispatch(removeFromCart(productId));
   };
 
   if (!isClient) {
@@ -133,7 +130,7 @@ export default function Checkout() {
                 or{' '}
                 <button
                   onClick={() => router.push('/')}
-                  className='text-indigo-600 font-medium hover:text-indigo-500'
+                  className='text-indigo-600 font-medium hover:text-indigo-500 cursor-pointer'
                 >
                   Continue Shopping
                 </button>
