@@ -40,14 +40,7 @@ export default function ProductVariants({ product }: Props) {
         ))}
       </div>
       <div className='mt-4 flex flex-col'>
-        {selectedVariant && (
-          <AddToCartButton
-            variant={{
-              ...selectedVariant,
-              price: selectedVariant.product_prices[0].price,
-            }}
-          />
-        )}
+        {selectedVariant && <AddToCartButton variant={selectedVariant} />}
       </div>
     </div>
   );

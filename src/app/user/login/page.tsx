@@ -1,5 +1,6 @@
 'use client';
 
+import { setTokenStore } from '@/app/stores/userSlice';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -10,8 +11,10 @@ import { AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function Login() {
+  const dispatch = useDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -47,6 +50,7 @@ export default function Login() {
       });
 
       localStorage.setItem('token', res.jwt);
+      dispatch(setTokenStore(res.jwt));
 
       // Redirect to dashboard on successful login
       router.push(returnTo || '/');

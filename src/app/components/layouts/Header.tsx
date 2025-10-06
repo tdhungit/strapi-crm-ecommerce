@@ -1,6 +1,7 @@
 'use client';
 
 import { RootState } from '@/app/stores';
+import { setUserStore } from '@/app/stores/userSlice';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
@@ -14,8 +15,9 @@ import UserService from '@/service/UserService';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import NavLink from '../NavLink';
+import UserMenuDropdown from './UserMenuDropdown';
 import WarehouseSelect from './WarehouseSelect';
 
 function PopoverCart() {
@@ -80,6 +82,9 @@ export default function Header({
 }: {
   globalSettings: GlobalSettingType;
 }) {
+  const dispatch = useDispatch();
+  const token = useSelector((state: RootState) => state.user.token);
+
   const [links, setLinks] = useState<{ href: string; label: string }[]>([]);
   const [user, setUser] = useState<any>(null);
 
@@ -98,15 +103,30 @@ export default function Header({
 
       setLinks(_links);
     });
+  }, []);
+
+  useEffect(() => {
+    if (!token) {
+      setUser(null);
+      dispatch(setUserStore(null));
+      return;
+    }
 
     if (UserService.isLogin()) {
-      ApiService.requestWithAuth('GET', '/customers/contact/me').then(
-        (user: any) => {
+      ApiService.requestWithAuth('GET', '/customers/contact/me')
+        .then((user: any) => {
           setUser(user);
-        }
-      );
+          dispatch(setUserStore(user));
+        })
+        .catch((err) => {
+          console.log(err);
+          // Logout
+          UserService.logout();
+          setUser(null);
+          dispatch(setUserStore(null));
+        });
     }
-  }, []);
+  }, [token]);
 
   return (
     <header className='bg-white/50'>
@@ -127,6 +147,13 @@ export default function Header({
               </NavLink>
             ))}
           </ul>
+          <div className='text-gray-500'>
+            {user ? (
+              <UserMenuDropdown user={user} />
+            ) : (
+              <Link href='/user/login'>Login</Link>
+            )}
+          </div>
           <PopoverCart />
         </div>
       </nav>
