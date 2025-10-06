@@ -9,9 +9,11 @@ import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 
 export default function RegisterForm({
+  autoLogin,
   onSuccess,
 }: {
-  onSuccess?: () => void;
+  autoLogin?: boolean;
+  onSuccess?: (contact: { token: string; [key: string]: any }) => void;
 }) {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -90,12 +92,17 @@ export default function RegisterForm({
     try {
       setIsLoading(true);
 
-      await ApiService.request('POST', '/customers/contact/register', {
-        ...formData,
-      });
+      const contact = await ApiService.request(
+        'POST',
+        '/customers/contact/register',
+        {
+          ...formData,
+          autoLogin,
+        }
+      );
 
       // Success
-      onSuccess?.();
+      onSuccess?.(contact);
     } catch (err) {
       setError(
         err instanceof Error

@@ -96,12 +96,14 @@ export default function LoginForm({
           <div className='space-y-2'>
             <div className='flex items-center justify-between'>
               <Label htmlFor='password'>Password</Label>
-              <span
-                onClick={() => setOpenForgotPasswordModal(true)}
-                className='text-sm font-medium text-primary hover:underline cursor-pointer'
-              >
-                Forgot password?
-              </span>
+              {showForgotPassword && (
+                <span
+                  onClick={() => setOpenForgotPasswordModal(true)}
+                  className='text-sm font-medium text-primary hover:underline cursor-pointer'
+                >
+                  Forgot password?
+                </span>
+              )}
             </div>
             <Input
               id='password'
@@ -135,13 +137,6 @@ export default function LoginForm({
               >
                 Don't have an account? Sign up
               </span>
-              <RegisterModal
-                open={openRegisterModal}
-                onOpenChange={setOpenRegisterModal}
-                onSuccess={() => {
-                  setOpenRegisterModal(false);
-                }}
-              />
             </div>
           )}
         </div>
@@ -183,6 +178,16 @@ export default function LoginForm({
           onOpenChange={setOpenForgotPasswordModal}
           onSuccess={() => {
             setOpenForgotPasswordModal(false);
+          }}
+        />
+      )}
+
+      {showSignUpLink && (
+        <RegisterModal
+          open={openRegisterModal}
+          onOpenChange={setOpenRegisterModal}
+          onSuccess={() => {
+            setOpenRegisterModal(false);
           }}
         />
       )}

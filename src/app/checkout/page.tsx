@@ -152,7 +152,10 @@ export default function Checkout() {
       <LoginModal
         open={openLoginModal}
         onOpenChange={setOpenLoginModal}
-        onSuccess={() => router.push('/payment')}
+        onSuccess={() => {
+          setOpenLoginModal(false);
+          router.push('/payment');
+        }}
       />
     </>
   );
