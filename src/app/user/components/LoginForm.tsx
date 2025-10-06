@@ -1,15 +1,17 @@
 'use client';
 
 import { setTokenStore } from '@/app/stores/userSlice';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import ApiService from '@/service/ApiService';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import ForgotPasswordModal from './ForgotPasswordModal';
+import RegisterModal from './RegisterModal';
 
 export default function LoginForm({
   onSuccess,
@@ -22,13 +24,15 @@ export default function LoginForm({
   showForgotPassword?: boolean;
 }) {
   const dispatch = useDispatch();
-  const router = useRouter();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const [openForgotPasswordModal, setOpenForgotPasswordModal] = useState(false);
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +70,14 @@ export default function LoginForm({
 
   return (
     <>
+      {error && (
+        <Alert variant='destructive'>
+          <AlertCircle className='h-4 w-4' />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
       <form className='space-y-6' onSubmit={handleSubmit}>
         <div className='space-y-4'>
           <div className='space-y-2'>
@@ -84,12 +96,12 @@ export default function LoginForm({
           <div className='space-y-2'>
             <div className='flex items-center justify-between'>
               <Label htmlFor='password'>Password</Label>
-              <Link
-                href='/user/forgot-password'
-                className='text-sm font-medium text-primary hover:underline'
+              <span
+                onClick={() => setOpenForgotPasswordModal(true)}
+                className='text-sm font-medium text-primary hover:underline cursor-pointer'
               >
                 Forgot password?
-              </Link>
+              </span>
             </div>
             <Input
               id='password'
@@ -116,13 +128,20 @@ export default function LoginForm({
             </label>
           </div>
           {showSignUpLink && (
-            <div className=''>
-              <Link
-                href='/user/register'
-                className='text-sm font-medium text-primary hover:underline'
+            <div>
+              <span
+                onClick={() => setOpenRegisterModal(true)}
+                className='text-sm font-medium text-primary hover:underline cursor-pointer'
               >
                 Don't have an account? Sign up
-              </Link>
+              </span>
+              <RegisterModal
+                open={openRegisterModal}
+                onOpenChange={setOpenRegisterModal}
+                onSuccess={() => {
+                  setOpenRegisterModal(false);
+                }}
+              />
             </div>
           )}
         </div>
@@ -157,6 +176,16 @@ export default function LoginForm({
           )}
         </Button>
       </form>
+
+      {showForgotPassword && (
+        <ForgotPasswordModal
+          open={openForgotPasswordModal}
+          onOpenChange={setOpenForgotPasswordModal}
+          onSuccess={() => {
+            setOpenForgotPasswordModal(false);
+          }}
+        />
+      )}
     </>
   );
 }

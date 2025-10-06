@@ -11,24 +11,24 @@ import LoginForm from './LoginForm';
 
 interface LoginModalProps {
   open: boolean;
-  setOpen: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
 }
 
 export default function LoginModal({
   open,
-  setOpen,
+  onOpenChange,
   onSuccess,
 }: LoginModalProps) {
   const handleSuccess = () => {
-    setOpen(false);
+    onOpenChange(false);
     if (onSuccess) {
       onSuccess();
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle className='text-2xl text-center'>

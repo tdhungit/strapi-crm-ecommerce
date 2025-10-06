@@ -37,7 +37,7 @@ function PopoverCart() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <a href='javascript:void(0)' className='flex items-center'>
+        <span className='flex items-center cursor-pointer'>
           <ShoppingCart />
           <Badge
             className='h-5 min-w-5 rounded-full px-1 font-mono tabular-nums'
@@ -45,7 +45,7 @@ function PopoverCart() {
           >
             {totalQty}
           </Badge>
-        </a>
+        </span>
       </PopoverTrigger>
       <PopoverContent className='w-[400px] p-0'>
         <div className='p-4'>
