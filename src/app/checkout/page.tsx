@@ -2,6 +2,8 @@
 
 import CartItem from '@/app/components/CartItem';
 import { formatCurrency } from '@/lib/utils';
+import ApiService from '@/service/ApiService';
+import UserService from '@/service/UserService';
 import { useRouter } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,6 +42,14 @@ export default function Checkout() {
 
   const handleRemoveItem = (productId: number) => {
     dispatch(removeFromCart(productId));
+  };
+
+  const handleMergeCart = () => {
+    ApiService.requestWithAuth('POST', '/customers/contact/cart', {
+      localCart: cart,
+    }).then(() => {
+      router.push('/payment');
+    });
   };
 
   if (!isClient) {
@@ -125,7 +135,11 @@ export default function Checkout() {
               <div className='mt-6'>
                 <button
                   onClick={() => {
-                    setOpenLoginModal(true);
+                    if (!UserService.isLogin()) {
+                      setOpenLoginModal(true);
+                      return;
+                    }
+                    handleMergeCart();
                   }}
                   className='w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors'
                 >
@@ -154,7 +168,7 @@ export default function Checkout() {
         onOpenChange={setOpenLoginModal}
         onSuccess={() => {
           setOpenLoginModal(false);
-          router.push('/payment');
+          handleMergeCart();
         }}
       />
     </>

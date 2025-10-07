@@ -1,7 +1,7 @@
 'use client';
 
 import { RootState } from '@/app/stores';
-import { setUserStore } from '@/app/stores/userSlice';
+import { setTokenStore, setUserStore } from '@/app/stores/userSlice';
 import { Badge } from '@/components/ui/badge';
 import {
   Popover,
@@ -112,7 +112,8 @@ export default function Header({
   }, []);
 
   useEffect(() => {
-    if (!token) {
+    const accessToken = token || UserService.getAccessToken();
+    if (!accessToken) {
       setUser(null);
       dispatch(setUserStore(null));
       return;
@@ -123,6 +124,7 @@ export default function Header({
         .then((user: any) => {
           setUser(user);
           dispatch(setUserStore(user));
+          dispatch(setTokenStore(accessToken));
         })
         .catch((err) => {
           console.log(err);
@@ -130,6 +132,7 @@ export default function Header({
           UserService.logout();
           setUser(null);
           dispatch(setUserStore(null));
+          dispatch(setTokenStore(''));
         });
     }
   }, [token]);

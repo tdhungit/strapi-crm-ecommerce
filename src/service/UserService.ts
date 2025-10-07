@@ -6,6 +6,10 @@ class UserService {
   logout() {
     localStorage.removeItem('token');
   }
+
+  getAccessToken() {
+    return localStorage.getItem('token');
+  }
 }
 
 export default new UserService();

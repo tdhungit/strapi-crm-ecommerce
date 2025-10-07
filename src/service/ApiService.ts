@@ -2,6 +2,10 @@ import axios from 'axios';
 
 class ApiService {
   private readonly API_URL = process.env.NEXT_PUBLIC_API_URL;
+  
+  get API_URL_PUBLIC() {
+    return this.API_URL || '';
+  }
 
   async request(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
