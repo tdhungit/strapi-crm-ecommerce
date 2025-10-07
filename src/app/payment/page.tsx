@@ -186,7 +186,7 @@ export default function Payment() {
                                 </p>
                               )}
                             </div>
-                            <div className='text-sm text-muted-foreground'>
+                            <div className='text-sm text-muted-foreground pl-1'>
                               {method.name === 'COD' && '💰'}
                               {method.name === 'paypal' && '💳'}
                               {method.name === 'stripe' && '💳'}
