@@ -3,7 +3,13 @@
 import ApiService from '@/service/ApiService';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 
-export default function Paypal({ order }: { order: any }) {
+export default function Paypal({
+  order,
+  paymentMethod,
+}: {
+  order: any;
+  paymentMethod: any;
+}) {
   const createOrder = () => {
     return ApiService.requestWithAuth(
       'POST',
@@ -21,11 +27,15 @@ export default function Paypal({ order }: { order: any }) {
       {
         order_id: data.orderID,
       }
-    ).then((res) => res.id);
+    ).then((orderData: any) => {
+      const name = orderData.payer.name.given_name;
+    });
   };
 
   return (
-    <PayPalScriptProvider options={{ clientId: 'test' }}>
+    <PayPalScriptProvider
+      options={{ clientId: paymentMethod.options?.clientId }}
+    >
       <PayPalButtons createOrder={createOrder} onApprove={onApprove} />
     </PayPalScriptProvider>
   );
