@@ -3,6 +3,7 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TabsContent } from '@radix-ui/react-tabs';
 import { useSearchParams } from 'next/navigation';
+import ChangePassword from '../components/ChangePassword';
 import MyAccount from '../components/MyAccount';
 import MyOrders from '../components/MyOrders';
 
@@ -16,12 +17,16 @@ export default function MyAccountPage() {
         <TabsList>
           <TabsTrigger value='my-account'>My Account</TabsTrigger>
           <TabsTrigger value='my-orders'>My Orders</TabsTrigger>
+          <TabsTrigger value='change-password'>Change Password</TabsTrigger>
         </TabsList>
         <TabsContent value='my-account'>
           <MyAccount />
         </TabsContent>
         <TabsContent value='my-orders'>
           <MyOrders />
+        </TabsContent>
+        <TabsContent value='change-password'>
+          <ChangePassword />
         </TabsContent>
       </Tabs>
     </div>

@@ -20,6 +20,17 @@ class UserService {
       params
     );
   }
+
+  changePassword(data: { currentPassword: string; newPassword: string }) {
+    return ApiService.requestWithAuth(
+      'POST',
+      '/customers/contact/change-password',
+      {
+        oldPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      }
+    );
+  }
 }
 
 export default new UserService();
