@@ -62,8 +62,8 @@ interface Order {
 
 export default function MyOrderDetail({ order }: { order: Order }) {
   return (
-    <div className='border-t bg-muted/30'>
-      <div className='p-6 space-y-6'>
+    <div className='w-full'>
+      <div className='space-y-6'>
         {/* Order Summary */}
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
           <div className='bg-background p-4 rounded-lg border'>
