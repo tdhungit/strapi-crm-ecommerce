@@ -10,6 +10,7 @@ import UserService from '@/service/UserService';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from 'sonner';
 import Loading from '../components/layouts/Loading';
 
 interface PaymentMethod {
@@ -60,6 +61,7 @@ export default function Payment() {
   const router = useRouter();
 
   const user = useSelector((state: any) => state.user);
+  const warehouse = useSelector((state: any) => state.warehouse);
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => setIsClient(true), []);
@@ -97,16 +99,25 @@ export default function Payment() {
   }, []);
 
   const handlePayment = async () => {
-    if (!selectedPaymentMethod) return;
+    if (!selectedPaymentMethod || !warehouse.warehouse?.id) {
+      toast.error('Please select a payment method and warehouse.');
+      return;
+    }
 
     setIsProcessing(true);
     try {
-      // Here you would implement the actual payment processing logic
-      // For now, we'll just show a success message
-      alert('Payment processing would be implemented here');
+      const order = await ApiService.requestWithAuth(
+        'POST',
+        '/customers/contact/orders',
+        {
+          payment_method: selectedPaymentMethod,
+          warehouseId: warehouse.warehouse?.id,
+        }
+      );
+      router.push(`/payment/${selectedPaymentMethod}/${order.id}`);
     } catch (error) {
       console.error('Payment failed:', error);
-      alert('Payment failed. Please try again.');
+      toast.error('Payment failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
