@@ -64,22 +64,21 @@ export default function PaymentMethod({ params }: Props) {
 
   return (
     <div className='bg-white/50 rounded-xl py-7 px-8 overflow-hidden'>
-      <h1 className='text-2xl font-bold'>Processing...</h1>
+      {paymentMethod.name === 'COD' && (
+        <div>
+          <h2 className='text-xl font-bold'>Cash on Delivery</h2>
+          <p className='text-gray-500'>
+            Please pay the amount to the store owner.
+          </p>
+        </div>
+      )}
 
-      <div className='mt-4'>
-        {paymentMethod.name === 'COD' && (
-          <div>
-            <h2 className='text-xl font-bold'>Cash on Delivery</h2>
-            <p className='text-gray-500'>
-              Please pay the amount to the store owner.
-            </p>
-          </div>
-        )}
-
-        {paymentMethod.name === 'paypal' && (
+      {paymentMethod.name === 'paypal' && (
+        <div>
+          <h2 className='text-xl font-bold'>Processing...</h2>
           <Paypal order={order} paymentMethod={paymentMethod} />
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

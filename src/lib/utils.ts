@@ -18,3 +18,8 @@ export function formatCurrency(num: number) {
   if (!num) return '$0';
   return '$' + formatNumber(num);
 }
+
+export function formatDate(date: string) {
+  if (!date) return '';
+  return new Date(date).toLocaleDateString('en-US');
+}
