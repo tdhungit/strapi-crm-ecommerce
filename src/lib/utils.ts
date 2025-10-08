@@ -6,6 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function getMediaUrl(media: any) {
+  if (!media?.url) {
+    return 'https://placehold.co/64x64/jpg';
+  }
   return process.env.NEXT_PUBLIC_API_URL + media?.url;
 }
 

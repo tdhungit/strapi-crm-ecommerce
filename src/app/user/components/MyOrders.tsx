@@ -13,9 +13,14 @@ import { formatDate } from '@/lib/utils';
 import UserService from '@/service/UserService';
 import { Eye, Package } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import MyOrderDetailModal from './MyOrderDetailModal';
 
 export default function MyOrders() {
   const [orders, setOrders] = useState<any[]>([]);
+
+  const [selectOrder, setSelectOrder] = useState<any>(null);
+  const [openOrderModal, setOpenOrderModal] = useState(false);
+
   const [pagination, setPagination] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +46,11 @@ export default function MyOrders() {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     setLoading(true);
+  };
+
+  const handleOpenOrderModal = (order: any) => {
+    setSelectOrder(order);
+    setOpenOrderModal(true);
   };
 
   if (loading) {
@@ -125,7 +135,12 @@ export default function MyOrders() {
                         ${order.total_amount.toFixed(2)}
                       </td>
                       <td className='p-3 text-right'>
-                        <Button variant='ghost' size='sm' className='h-7 px-2'>
+                        <Button
+                          variant='ghost'
+                          size='sm'
+                          className='h-7 px-2'
+                          onClick={() => handleOpenOrderModal(order)}
+                        >
                           <Eye className='h-3 w-3 mr-1' />
                           View
                         </Button>
@@ -180,6 +195,14 @@ export default function MyOrders() {
           )}
         </CardContent>
       </Card>
+
+      {selectOrder && (
+        <MyOrderDetailModal
+          order={selectOrder}
+          open={openOrderModal}
+          onOpenChange={setOpenOrderModal}
+        />
+      )}
     </div>
   );
 }
