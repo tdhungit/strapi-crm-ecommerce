@@ -2,15 +2,15 @@
 
 import Loading from '@/app/components/layouts/Loading';
 import ApiService from '@/service/ApiService';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Paypal from '../../components/Paypal';
 
 interface Props {
-  params: { paymentMethod: string; saleOrderId: string };
+  params: Promise<{ paymentMethod: string; saleOrderId: string }>;
 }
 
 export default function PaymentMethod({ params }: Props) {
-  const { paymentMethod: paymentMethodName, saleOrderId } = params;
+  const { paymentMethod: paymentMethodName, saleOrderId } = React.use(params);
 
   const [order, setOrder] = useState<any>(null);
   const [orderLoading, setOrderLoading] = useState<boolean>(true);

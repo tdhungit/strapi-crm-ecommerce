@@ -15,8 +15,14 @@ export default function Checkout() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const user = useSelector((state: any) => state.user);
   const cart = useSelector((state: any) => state.cart.items);
+  useEffect(() => {
+    if (UserService.isLogin()) {
+      ApiService.requestWithAuth('POST', '/customers/contact/cart', {
+        localCart: cart,
+      }).then();
+    }
+  }, [cart]);
 
   const { subtotal, shipping, tax, total } = useMemo(() => {
     const subtotal = cart.reduce(

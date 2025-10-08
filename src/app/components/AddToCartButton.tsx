@@ -1,7 +1,10 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useDispatch } from 'react-redux';
+import ApiService from '@/service/ApiService';
+import UserService from '@/service/UserService';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { addToCart } from '../stores/cartSlice';
 
@@ -11,6 +14,15 @@ interface Props {
 
 export default function AddToCartButton({ variant }: Props) {
   const dispatch = useDispatch();
+  const cart = useSelector((state: any) => state.cart.items);
+
+  useEffect(() => {
+    if (UserService.isLogin()) {
+      ApiService.requestWithAuth('POST', '/customers/contact/cart', {
+        localCart: cart,
+      }).then();
+    }
+  }, [cart]);
 
   const handleAdd = () => {
     dispatch(
@@ -21,6 +33,7 @@ export default function AddToCartButton({ variant }: Props) {
         beforePrice: variant.product_prices[0].before_price,
       })
     );
+
     toast.success('Product added to cart');
   };
 
