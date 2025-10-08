@@ -1,17 +1,46 @@
+'use client';
+
+import Loading from '@/app/components/layouts/Loading';
 import ApiService from '@/service/ApiService';
+import { useEffect, useState } from 'react';
 import Paypal from '../../components/Paypal';
 
 interface Props {
-  params: Promise<{ paymentMethod: string; saleOrderId: string }>;
+  params: { paymentMethod: string; saleOrderId: string };
 }
 
-export default async function PaymentMethod({ params }: Props) {
-  const { paymentMethod: paymentMethodName, saleOrderId } = await params;
+export default function PaymentMethod({ params }: Props) {
+  const { paymentMethod: paymentMethodName, saleOrderId } = params;
 
-  const order = await ApiService.requestWithAuth(
-    'GET',
-    `/customers/contact/orders/${saleOrderId}`
-  );
+  const [order, setOrder] = useState<any>(null);
+  const [orderLoading, setOrderLoading] = useState<boolean>(true);
+  const [paymentMethod, setPaymentMethod] = useState<any>(null);
+  const [paymentMethodLoading, setPaymentMethodLoading] =
+    useState<boolean>(true);
+
+  useEffect(() => {
+    if (!saleOrderId || !paymentMethodName) return;
+
+    setOrderLoading(true);
+    setPaymentMethodLoading(true);
+
+    ApiService.requestWithAuth(
+      'GET',
+      `/customers/contact/orders/${saleOrderId}`
+    )
+      .then((res) => {
+        setOrder(res);
+      })
+      .finally(() => setOrderLoading(false));
+
+    ApiService.request('GET', `/payment-methods/${paymentMethodName}/details`)
+      .then((res) => {
+        setPaymentMethod(res);
+      })
+      .finally(() => setPaymentMethodLoading(false));
+  }, [saleOrderId, paymentMethodName]);
+
+  if (orderLoading || paymentMethodLoading) return <Loading />;
 
   if (!order) {
     return (
@@ -22,11 +51,6 @@ export default async function PaymentMethod({ params }: Props) {
       </div>
     );
   }
-
-  const paymentMethod = await ApiService.request(
-    'GET',
-    `/payment-methods/${paymentMethodName}/details`
-  );
 
   if (!paymentMethod) {
     return (

@@ -9,9 +9,10 @@ import ApiService from '@/service/ApiService';
 import UserService from '@/service/UserService';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import Loading from '../components/layouts/Loading';
+import { clearCart } from '../stores/cartSlice';
 
 interface PaymentMethod {
   id: number;
@@ -59,6 +60,7 @@ interface Cart {
 
 export default function Payment() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const user = useSelector((state: any) => state.user);
   const warehouse = useSelector((state: any) => state.warehouse);
@@ -88,7 +90,7 @@ export default function Payment() {
           (method: PaymentMethod) => method.enabled
         );
         if (enabledMethods.length > 0) {
-          setSelectedPaymentMethod(enabledMethods[0].documentId);
+          setSelectedPaymentMethod(enabledMethods[0].name);
         }
       } catch (error) {
         console.error('Error fetching payment data:', error);
@@ -114,6 +116,10 @@ export default function Payment() {
           warehouseId: warehouse.warehouse?.id,
         }
       );
+      // Clear cart
+      dispatch(clearCart());
+      localStorage.removeItem('cart');
+      // Payment method processing
       router.push(`/payment/${selectedPaymentMethod}/${order.id}`);
     } catch (error) {
       console.error('Payment failed:', error);
@@ -170,7 +176,9 @@ export default function Payment() {
               ) : (
                 <RadioGroup
                   value={selectedPaymentMethod}
-                  onValueChange={setSelectedPaymentMethod}
+                  onValueChange={(value) => {
+                    setSelectedPaymentMethod(value);
+                  }}
                 >
                   <div className='space-y-4'>
                     {enabledPaymentMethods.map((method) => (
@@ -179,7 +187,7 @@ export default function Payment() {
                         className='flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/50 transition-colors'
                       >
                         <RadioGroupItem
-                          value={method.documentId}
+                          value={method.name}
                           id={method.documentId}
                         />
                         <Label
