@@ -1,14 +1,17 @@
 'use client';
 
+import { formatCurrency } from '@/lib/utils';
 import ApiService from '@/service/ApiService';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 export default function Paypal({
   order,
   paymentMethod,
+  onSuccess,
 }: {
   order: any;
   paymentMethod: any;
+  onSuccess?: (orderData: any) => void;
 }) {
   const createOrder = () => {
     return ApiService.requestWithAuth(
@@ -25,10 +28,10 @@ export default function Paypal({
       'POST',
       '/customers/payment-method/paypal/approve-order',
       {
-        order_id: data.orderID,
+        saleOrderId: order.id,
       }
     ).then((orderData: any) => {
-      const name = orderData.payer.name.given_name;
+      onSuccess?.(orderData);
     });
   };
 
@@ -36,7 +39,15 @@ export default function Paypal({
     <PayPalScriptProvider
       options={{ clientId: paymentMethod.options?.clientId }}
     >
-      <PayPalButtons createOrder={createOrder} onApprove={onApprove} />
+      <div className='space-y-4 flex flex-col'>
+        <div className='text-2xl font-bold'>
+          Total: {formatCurrency(order.total_amount)}
+        </div>
+
+        <div>
+          <PayPalButtons createOrder={createOrder} onApprove={onApprove} />
+        </div>
+      </div>
     </PayPalScriptProvider>
   );
 }

@@ -19,6 +19,7 @@ export default function PaymentMethod({ params }: Props) {
   const router = useRouter();
 
   const [order, setOrder] = useState<any>(null);
+  const [orderStatus, setOrderStatus] = useState<string>('');
   const [orderLoading, setOrderLoading] = useState<boolean>(true);
   const [paymentMethod, setPaymentMethod] = useState<any>(null);
   const [paymentMethodLoading, setPaymentMethodLoading] =
@@ -45,6 +46,11 @@ export default function PaymentMethod({ params }: Props) {
       })
       .finally(() => setPaymentMethodLoading(false));
   }, [saleOrderId, paymentMethodName]);
+
+  useEffect(() => {
+    if (!order) return;
+    setOrderStatus(order.order_status);
+  }, [order]);
 
   if (orderLoading || paymentMethodLoading) return <Loading />;
 
@@ -94,10 +100,41 @@ export default function PaymentMethod({ params }: Props) {
       )}
 
       {paymentMethod.name === 'paypal' && (
-        <div>
-          <h2 className='text-xl font-bold'>Processing...</h2>
-          <Paypal order={order} paymentMethod={paymentMethod} />
-        </div>
+        <>
+          {orderStatus === 'Completed' && (
+            <div className='space-y-4 flex flex-col'>
+              <h2 className='text-xl font-bold'>Payment Completed</h2>
+              <MyOrderDetail order={order} />
+            </div>
+          )}
+
+          {orderStatus !== 'Completed' && (
+            <div className='space-y-4 flex flex-col w-[400px] mx-auto'>
+              <h2 className='text-xl font-bold'>Paypal Payment</h2>
+
+              <Alert variant='destructive'>
+                <AlertCircleIcon />
+                <AlertTitle>Warning</AlertTitle>
+                <AlertDescription>
+                  Please pay the amount to the paypal account.
+                </AlertDescription>
+              </Alert>
+
+              <div className=''>
+                <Paypal
+                  order={order}
+                  paymentMethod={paymentMethod}
+                  onSuccess={(orderData: any) => {
+                    if (orderData?.order_status) {
+                      setOrder(orderData);
+                      setOrderStatus(orderData.order_status);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
