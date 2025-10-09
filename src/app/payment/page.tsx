@@ -197,13 +197,8 @@ export default function Payment() {
                           <div className='flex items-center justify-between'>
                             <div>
                               <p className='font-medium capitalize'>
-                                {method.name}
+                                {method.description || method.name}
                               </p>
-                              {method.description && (
-                                <p className='text-sm text-muted-foreground'>
-                                  {method.description}
-                                </p>
-                              )}
                             </div>
                             <div className='text-sm text-muted-foreground pl-1'>
                               {method.name === 'COD' && '💰'}
