@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import Loading from '../components/layouts/Loading';
 import { clearCart } from '../stores/cartSlice';
+import Shipping from './components/Shipping';
 
 interface PaymentMethod {
   id: number;
@@ -73,6 +74,7 @@ export default function Payment() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [shippingData, setShippingData] = useState<any>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -82,11 +84,11 @@ export default function Payment() {
           ApiService.requestWithAuth('GET', '/customers/contact/cart'),
         ]);
 
-        setPaymentMethods(paymentRes.data);
+        setPaymentMethods(paymentRes);
         setCart(cartRes);
 
         // Auto-select first enabled payment method
-        const enabledMethods = paymentRes.data.filter(
+        const enabledMethods = paymentRes.filter(
           (method: PaymentMethod) => method.enabled
         );
         if (enabledMethods.length > 0) {
@@ -160,61 +162,7 @@ export default function Payment() {
   return (
     <div className='max-w-6xl mx-auto p-6'>
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-        {/* Payment Methods */}
         <div className='lg:col-span-2'>
-          <Card className='mb-6'>
-            <CardHeader>
-              <CardTitle className='text-2xl font-bold'>
-                Payment Method
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {enabledPaymentMethods.length === 0 ? (
-                <p className='text-muted-foreground'>
-                  No payment methods available.
-                </p>
-              ) : (
-                <RadioGroup
-                  value={selectedPaymentMethod}
-                  onValueChange={(value) => {
-                    setSelectedPaymentMethod(value);
-                  }}
-                >
-                  <div className='space-y-4'>
-                    {enabledPaymentMethods.map((method) => (
-                      <div
-                        key={method.documentId}
-                        className='flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/50 transition-colors'
-                      >
-                        <RadioGroupItem
-                          value={method.name}
-                          id={method.documentId}
-                        />
-                        <Label
-                          htmlFor={method.documentId}
-                          className='flex-1 cursor-pointer'
-                        >
-                          <div className='flex items-center justify-between'>
-                            <div>
-                              <p className='font-medium capitalize'>
-                                {method.description || method.name}
-                              </p>
-                            </div>
-                            <div className='text-sm text-muted-foreground pl-1'>
-                              {method.name === 'COD' && '💰'}
-                              {method.name === 'paypal' && '💳'}
-                              {method.name === 'stripe' && '💳'}
-                            </div>
-                          </div>
-                        </Label>
-                      </div>
-                    ))}
-                  </div>
-                </RadioGroup>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Order Summary */}
           <Card>
             <CardHeader>
@@ -260,6 +208,67 @@ export default function Payment() {
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Shipping */}
+          <div className='mt-4'>
+            <Shipping />
+          </div>
+
+          {/* Payment Methods */}
+          <Card className='mt-4'>
+            <CardHeader>
+              <CardTitle className='text-2xl font-bold'>
+                Payment Method
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <>
+                {enabledPaymentMethods.length === 0 ? (
+                  <p className='text-muted-foreground'>
+                    No payment methods available.
+                  </p>
+                ) : (
+                  <RadioGroup
+                    value={selectedPaymentMethod}
+                    onValueChange={(value) => {
+                      setSelectedPaymentMethod(value);
+                    }}
+                  >
+                    <div className='space-y-4'>
+                      {enabledPaymentMethods.map((method) => (
+                        <div
+                          key={method.documentId}
+                          className='flex items-center space-x-3 p-4 border rounded-lg hover:bg-accent/50 transition-colors'
+                        >
+                          <RadioGroupItem
+                            value={method.name}
+                            id={method.documentId}
+                          />
+                          <Label
+                            htmlFor={method.documentId}
+                            className='flex-1 cursor-pointer'
+                          >
+                            <div className='flex items-center justify-between'>
+                              <div>
+                                <p className='font-medium capitalize'>
+                                  {method.description || method.name}
+                                </p>
+                              </div>
+                              <div className='text-sm text-muted-foreground pl-1'>
+                                {method.name === 'COD' && '💰'}
+                                {method.name === 'paypal' && '💳'}
+                                {method.name === 'stripe' && '💳'}
+                              </div>
+                            </div>
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </RadioGroup>
+                )}
+              </>
             </CardContent>
           </Card>
         </div>
