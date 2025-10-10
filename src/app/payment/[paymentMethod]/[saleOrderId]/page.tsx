@@ -9,6 +9,7 @@ import { AlertCircleIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import Paypal from '../../components/Paypal';
+import Stripe from '../../components/Stripe';
 
 interface Props {
   params: Promise<{ paymentMethod: string; saleOrderId: string }>;
@@ -133,6 +134,31 @@ export default function PaymentMethod({ params }: Props) {
                 />
               </div>
             </div>
+          )}
+        </>
+      )}
+
+      {paymentMethod.name === 'stripe' && (
+        <>
+          {orderStatus === 'Completed' && (
+            <div className='space-y-4 flex flex-col'>
+              <h2 className='text-xl font-bold'>Payment Completed</h2>
+              <MyOrderDetail order={order} />
+            </div>
+          )}
+
+          {orderStatus !== 'Completed' && (
+            <>
+              <h2 className='text-xl font-bold'>Stripe Payment</h2>
+              <Stripe
+                order={order}
+                paymentMethod={paymentMethod}
+                onSuccess={(orderData: any) => {
+                  setOrder(orderData);
+                  setOrderStatus(orderData.order_status);
+                }}
+              />
+            </>
           )}
         </>
       )}
