@@ -29,7 +29,8 @@ export default function MyOrders() {
     const fetchOrders = async () => {
       try {
         const res = await UserService.getOrders({
-          pagination: { page: currentPage, pageSize: 10 },
+          page: currentPage,
+          pageSize: 10,
         });
         setOrders(res.data);
         setPagination(res.meta.pagination);
