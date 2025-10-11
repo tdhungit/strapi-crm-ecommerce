@@ -59,6 +59,12 @@ interface Cart {
   cart_details: CartDetail[];
 }
 
+interface ShippingDataType {
+  address: any;
+  method: any;
+  amount: any;
+}
+
 export default function Payment() {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -74,7 +80,9 @@ export default function Payment() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [shippingData, setShippingData] = useState<any>(null);
+  const [shippingData, setShippingData] = useState<ShippingDataType | null>(
+    null
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,7 +111,22 @@ export default function Payment() {
   }, []);
 
   const handlePayment = async () => {
-    if (!selectedPaymentMethod || !warehouse.warehouse?.id) {
+    if (!warehouse.warehouse?.id) {
+      toast.error('Please select a warehouse.');
+      return;
+    }
+
+    if (!shippingData?.address?.id) {
+      toast.error('Please select a shipping address.');
+      return;
+    }
+
+    if (!shippingData?.method?.id) {
+      toast.error('Please select a shipping method.');
+      return;
+    }
+
+    if (!selectedPaymentMethod) {
       toast.error('Please select a payment method and warehouse.');
       return;
     }
@@ -114,8 +137,11 @@ export default function Payment() {
         'POST',
         '/customers/contact/orders',
         {
-          payment_method: selectedPaymentMethod,
+          paymentMethod: selectedPaymentMethod,
           warehouseId: warehouse.warehouse?.id,
+          contactAddressId: shippingData.address?.id,
+          shippingMethodId: shippingData.method?.id,
+          couponIds: [],
         }
       );
       // Clear cart
@@ -142,7 +168,16 @@ export default function Payment() {
       cart.tax_type === 'percentage'
         ? (subtotal - discount) * (cart.tax_amount / 100)
         : cart.tax_amount;
-    return subtotal - discount + tax;
+    const shipping = shippingData?.amount.total ?? 0;
+    return subtotal - discount + tax + shipping;
+  };
+
+  const enabledPaymentMethods = paymentMethods.filter(
+    (method) => method.enabled
+  );
+
+  const handleChangeShipping = (data: any) => {
+    setShippingData(data);
   };
 
   useEffect(() => {
@@ -154,10 +189,6 @@ export default function Payment() {
   if (!isClient || !cart) {
     return <Loading />;
   }
-
-  const enabledPaymentMethods = paymentMethods.filter(
-    (method) => method.enabled
-  );
 
   return (
     <div className='max-w-6xl mx-auto p-6'>
@@ -213,7 +244,7 @@ export default function Payment() {
 
           {/* Shipping */}
           <div className='mt-4'>
-            <Shipping />
+            <Shipping onChange={handleChangeShipping} />
           </div>
 
           {/* Payment Methods */}
@@ -311,6 +342,12 @@ export default function Payment() {
                         : cart.tax_amount
                       ).toFixed(2)}
                     </span>
+                  </div>
+                )}
+                {shippingData?.amount.total > 0 && (
+                  <div className='flex justify-between'>
+                    <span>Shipping</span>
+                    <span>${shippingData?.amount.total.toFixed(2)}</span>
                   </div>
                 )}
                 <Separator />

@@ -6,12 +6,34 @@ import ApiService from '@/service/ApiService';
 import { useEffect, useState } from 'react';
 import AddressesModal from './AddressesModal';
 
-export default function Shipping({ onFinish }: { onFinish?: () => void }) {
+export default function Shipping({
+  onChange,
+}: {
+  onChange?: (changes: any) => void;
+}) {
   const [shippingMethods, setShippingMethods] = useState([] as any[]);
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState(null);
+  const [selectedShippingMethod, setSelectedShippingMethod] =
+    useState<any>(null);
 
   const [selectedAddress, setSelectedAddress] = useState<any>(null);
   const [openManagerAddresses, setOpenManagerAddresses] = useState(false);
+
+  const [shippingAmount, setShippingAmount] = useState<any>({});
+
+  const getShippingAmount = () => {
+    if (selectedAddress && selectedShippingMethod) {
+      ApiService.requestWithAuth(
+        'POST',
+        '/customers/shipping-methods/get-amount',
+        {
+          contactAddressId: selectedAddress.id,
+          shippingMethodId: selectedShippingMethod.id,
+        }
+      ).then((res) => {
+        setShippingAmount(res);
+      });
+    }
+  };
 
   useEffect(() => {
     ApiService.request('GET', '/public/shipping-methods').then((res) => {
@@ -27,6 +49,18 @@ export default function Shipping({ onFinish }: { onFinish?: () => void }) {
       }
     });
   }, []);
+
+  useEffect(() => {
+    getShippingAmount();
+  }, [selectedAddress, selectedShippingMethod]);
+
+  useEffect(() => {
+    onChange?.({
+      address: selectedAddress,
+      method: selectedShippingMethod,
+      amount: shippingAmount,
+    });
+  }, [shippingAmount]);
 
   return (
     <>
