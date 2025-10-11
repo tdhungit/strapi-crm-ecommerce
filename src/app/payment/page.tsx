@@ -133,6 +133,26 @@ export default function Payment() {
     setShippingData(data);
   };
 
+  const handleChangeCoupon = (coupons: CouponType[]) => {
+    setCoupons(coupons);
+    if (!cart) return;
+    let discount = 0;
+    coupons.forEach((coupon) => {
+      if (coupon.discount_type === 'percentage') {
+        discount += cart?.subtotal * (coupon.discount_value / 100);
+      } else {
+        discount += coupon.discount_value;
+      }
+    });
+    setCart((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        discount_amount: discount,
+      };
+    });
+  };
+
   useEffect(() => {
     if (isClient && !UserService.isLogin()) {
       router.push('/user/login?returnTo=/payment');
@@ -307,7 +327,10 @@ export default function Payment() {
                 <div className='flex justify-between'>
                   <span>Coupons</span>
                   <div>
-                    <Coupons initValues={coupons} />
+                    <Coupons
+                      initValues={coupons}
+                      onChange={handleChangeCoupon}
+                    />
                   </div>
                 </div>
                 <Separator />
