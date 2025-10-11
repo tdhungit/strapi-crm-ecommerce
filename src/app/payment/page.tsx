@@ -80,7 +80,7 @@ export default function Payment() {
     const fetchData = async () => {
       try {
         const [paymentRes, cartRes] = await Promise.all([
-          ApiService.request('GET', '/payment-methods'),
+          ApiService.request('GET', '/public/payment-methods'),
           ApiService.requestWithAuth('GET', '/customers/contact/cart'),
         ]);
 

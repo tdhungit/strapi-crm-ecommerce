@@ -13,6 +13,13 @@ export default function Paypal({
   paymentMethod: any;
   onSuccess?: (orderData: any) => void;
 }) {
+  const getClientId = () => {
+    if (paymentMethod.options?.sandbox) {
+      return paymentMethod.options?.sandboxClientId || '';
+    }
+    return paymentMethod.options?.clientId || '';
+  };
+
   const createOrder = () => {
     return ApiService.requestWithAuth(
       'POST',
@@ -36,9 +43,7 @@ export default function Paypal({
   };
 
   return (
-    <PayPalScriptProvider
-      options={{ clientId: paymentMethod.options?.clientId }}
-    >
+    <PayPalScriptProvider options={{ clientId: getClientId() }}>
       <div className='space-y-4 flex flex-col'>
         <div className='text-2xl font-bold'>
           Total: {formatCurrency(order.total_amount)}

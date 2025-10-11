@@ -41,7 +41,10 @@ export default function PaymentMethod({ params }: Props) {
       })
       .finally(() => setOrderLoading(false));
 
-    ApiService.request('GET', `/payment-methods/${paymentMethodName}/details`)
+    ApiService.request(
+      'GET',
+      `/public/payment-methods/${paymentMethodName}/details`
+    )
       .then((res) => {
         setPaymentMethod(res);
       })

@@ -14,7 +14,7 @@ export default function Shipping({ onFinish }: { onFinish?: () => void }) {
   const [openManagerAddresses, setOpenManagerAddresses] = useState(false);
 
   useEffect(() => {
-    ApiService.request('GET', '/shipping-methods').then((res) => {
+    ApiService.request('GET', '/public/shipping-methods').then((res) => {
       setShippingMethods(res);
     });
 
