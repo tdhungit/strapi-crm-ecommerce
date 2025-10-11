@@ -13,57 +13,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import Loading from '../components/layouts/Loading';
 import { clearCart } from '../stores/cartSlice';
+import Coupons from './components/Coupons';
 import Shipping from './components/Shipping';
-
-interface PaymentMethod {
-  id: number;
-  documentId: string;
-  name: string;
-  description: string;
-  options: any;
-  enabled: boolean;
-}
-
-interface CartDetail {
-  id: number;
-  documentId: string;
-  quantity: number;
-  price: number;
-  discount_amount: number;
-  discount_type: string;
-  tax_amount: number;
-  tax_type: string;
-  product_variant: {
-    id: number;
-    documentId: string;
-    name: string;
-    sku: string;
-    variant_status: string;
-    photos: Array<{
-      id: number;
-      url: string;
-      name: string;
-      formats: any;
-    }>;
-  };
-}
-
-interface Cart {
-  id: number;
-  documentId: string;
-  subtotal: number;
-  discount_amount: number;
-  discount_type: string;
-  tax_amount: number;
-  tax_type: string;
-  cart_details: CartDetail[];
-}
-
-interface ShippingDataType {
-  address: any;
-  method: any;
-  amount: any;
-}
+import { Cart, CouponType, PaymentMethod, ShippingDataType } from './types';
 
 export default function Payment() {
   const router = useRouter();
@@ -83,6 +35,7 @@ export default function Payment() {
   const [shippingData, setShippingData] = useState<ShippingDataType | null>(
     null
   );
+  const [coupons, setCoupons] = useState<CouponType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -350,6 +303,13 @@ export default function Payment() {
                     <span>${shippingData?.amount.total.toFixed(2)}</span>
                   </div>
                 )}
+                <Separator />
+                <div className='flex justify-between'>
+                  <span>Coupons</span>
+                  <div>
+                    <Coupons initValues={coupons} />
+                  </div>
+                </div>
                 <Separator />
                 <div className='flex justify-between font-bold text-lg'>
                   <span>Total</span>
