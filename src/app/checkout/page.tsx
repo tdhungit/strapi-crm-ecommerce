@@ -31,7 +31,7 @@ export default function Checkout() {
     );
 
     const shipping = 0; // You can implement shipping calculation logic here
-    const tax = subtotal * 0.1; // 10% tax for example
+    const tax = 0; // 10% tax for example
     const total = subtotal + shipping + tax;
 
     return { subtotal, shipping, tax, total };
