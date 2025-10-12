@@ -50,6 +50,7 @@ interface Order {
   subtotal: number;
   discount_type: string;
   discount_amount: number;
+  shipping_amount: number;
   tax_type: string;
   tax_amount: number;
   total_amount: number;
@@ -177,6 +178,12 @@ export default function MyOrderDetail({ order }: { order: Order }) {
                       : order.discount_amount
                     ).toFixed(2)}
                   </span>
+                </div>
+              )}
+              {order.shipping_amount > 0 && (
+                <div className='flex justify-between text-sm'>
+                  <span>Shipping</span>
+                  <span>${order.shipping_amount.toFixed(2)}</span>
                 </div>
               )}
               {order.tax_amount > 0 && (

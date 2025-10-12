@@ -119,9 +119,9 @@ export default function Checkout() {
                 </div>
 
                 <div className='flex justify-between'>
-                  <span className='text-gray-600'>Shipping</span>
+                  <span className='text-gray-600'>Discount</span>
                   <span className='font-medium'>
-                    {shipping === 0 ? 'Free' : formatCurrency(shipping)}
+                    {formatCurrency(cart.discount_amount)}
                   </span>
                 </div>
 

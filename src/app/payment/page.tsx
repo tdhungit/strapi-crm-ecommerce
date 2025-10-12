@@ -114,10 +114,7 @@ export default function Payment() {
   const calculateTotal = () => {
     if (!cart) return 0;
     const subtotal = cart.subtotal;
-    const discount =
-      cart.discount_type === 'percentage'
-        ? subtotal * (cart.discount_amount / 100)
-        : cart.discount_amount;
+    const discount = cart.discount_amount;
     const tax =
       cart.tax_type === 'percentage'
         ? (subtotal - discount) * (cart.tax_amount / 100)
@@ -297,34 +294,21 @@ export default function Payment() {
                     <span>Discount</span>
                     <span>
                       -$
-                      {(cart.discount_type === 'percentage'
-                        ? cart.subtotal * (cart.discount_amount / 100)
-                        : cart.discount_amount
-                      ).toFixed(2)}
+                      {cart.discount_amount.toFixed(2)}
                     </span>
                   </div>
                 )}
                 {cart.tax_amount > 0 && (
                   <div className='flex justify-between'>
                     <span>Tax</span>
-                    <span>
-                      $
-                      {(cart.tax_type === 'percentage'
-                        ? (cart.subtotal -
-                            (cart.discount_type === 'percentage'
-                              ? cart.subtotal * (cart.discount_amount / 100)
-                              : cart.discount_amount)) *
-                          (cart.tax_amount / 100)
-                        : cart.tax_amount
-                      ).toFixed(2)}
-                    </span>
+                    <span>${cart.tax_amount.toFixed(2)}</span>
                   </div>
                 )}
-                {shippingData?.amount && shippingData.amount.total > 0 && (
+                {shippingData?.amount && shippingData.amount.subtotal > 0 && (
                   <>
                     <div className='flex justify-between'>
                       <span>Shipping</span>
-                      <span>${shippingData?.amount.total.toFixed(2)}</span>
+                      <span>${shippingData?.amount.subtotal.toFixed(2)}</span>
                     </div>
                     <div className='flex justify-between text-green-600'>
                       <span>Shipping Discount</span>
