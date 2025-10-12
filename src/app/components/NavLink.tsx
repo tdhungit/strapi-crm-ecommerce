@@ -10,9 +10,14 @@ function cn(...inputs: (string | undefined | null | false)[]) {
 interface NavLinkProps {
   href: string;
   children: React.ReactNode;
+  className?: string;
 }
 
-export default function NavLink({ href, children }: Readonly<NavLinkProps>) {
+export default function NavLink({
+  href,
+  children,
+  className,
+}: Readonly<NavLinkProps>) {
   const pathname = usePathname();
   const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href);
 
@@ -21,7 +26,8 @@ export default function NavLink({ href, children }: Readonly<NavLinkProps>) {
       <Link
         href={href}
         className={cn(
-          isActive ? 'opacity-100' : 'opacity-50 hover:opacity-100'
+          isActive ? 'opacity-100' : 'opacity-50 hover:opacity-100',
+          className
         )}
       >
         {children}

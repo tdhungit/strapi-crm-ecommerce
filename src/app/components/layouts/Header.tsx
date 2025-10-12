@@ -37,46 +37,64 @@ function PopoverCart() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <span className='flex items-center cursor-pointer'>
-          <ShoppingCart />
-          <Badge
-            className='h-5 min-w-5 rounded-full px-1 font-mono tabular-nums'
-            variant='destructive'
-          >
-            {totalQty}
-          </Badge>
-        </span>
+        <div className='relative flex items-center cursor-pointer hover:bg-gray-100 p-2 rounded-lg transition-colors duration-200'>
+          <ShoppingCart className='w-6 h-6 text-black' />
+          {totalQty > 0 && (
+            <Badge className='absolute -top-1 -right-1 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums bg-black text-white hover:bg-gray-800'>
+              {totalQty}
+            </Badge>
+          )}
+        </div>
       </PopoverTrigger>
-      <PopoverContent className='w-[400px] p-0'>
-        <div className='p-4'>
-          <div className='flex flex-col gap-2'>
-            {cart.map((item: any) => (
-              <div key={item.id} className='flex gap-2'>
-                <img
-                  src={getMediaUrl(item.photos[0])}
-                  alt={item.name}
-                  className='w-16 h-16 object-cover'
-                />
-                <div className='flex-1'>
-                  <h3 className='font-bold text-sm'>{item.name}</h3>
-                  <p className='text-sm text-gray-500'>
-                    {item.cartQty} x {formatCurrency(item.price)}
-                  </p>
-                </div>
+      <PopoverContent className='w-[400px] p-0 border border-gray-200 shadow-lg'>
+        <div className='p-6 bg-white'>
+          <h3 className='text-lg font-bold text-black mb-4'>Shopping Cart</h3>
+          {cart.length === 0 ? (
+            <p className='text-gray-500 text-center py-4'>Your cart is empty</p>
+          ) : (
+            <>
+              <div className='flex flex-col gap-4 max-h-64 overflow-y-auto'>
+                {cart.map((item: any) => (
+                  <div
+                    key={item.id}
+                    className='flex gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors'
+                  >
+                    <img
+                      src={getMediaUrl(item.photos[0])}
+                      alt={item.name}
+                      className='w-16 h-16 object-cover rounded-lg border border-gray-200'
+                    />
+                    <div className='flex-1'>
+                      <h4 className='font-semibold text-black text-sm mb-1'>
+                        {item.name}
+                      </h4>
+                      <p className='text-sm text-gray-600'>
+                        {item.cartQty} × {formatCurrency(item.price)}
+                      </p>
+                      <p className='text-sm font-medium text-black'>
+                        {formatCurrency(item.price * item.cartQty)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className='flex justify-between items-center mt-4'>
-            <p className='font-bold'>Total: {formatCurrency(total)}</p>
-            <PopoverClose asChild>
-              <Link
-                href='/checkout'
-                className='bg-primary text-white px-4 py-2 rounded'
-              >
-                Checkout
-              </Link>
-            </PopoverClose>
-          </div>
+              <div className='border-t border-gray-200 mt-4 pt-4'>
+                <div className='flex justify-between items-center mb-4'>
+                  <span className='text-lg font-bold text-black'>
+                    Total: {formatCurrency(total)}
+                  </span>
+                </div>
+                <PopoverClose asChild>
+                  <Link
+                    href='/checkout'
+                    className='w-full bg-black text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors duration-200 text-center block'
+                  >
+                    Proceed to Checkout
+                  </Link>
+                </PopoverClose>
+              </div>
+            </>
+          )}
         </div>
       </PopoverContent>
     </Popover>
@@ -138,34 +156,79 @@ export default function Header({
   }, [token]);
 
   return (
-    <header className='bg-white/50'>
-      <nav className='container mx-auto flex justify-between items-center py-4'>
-        <Link href='/'>
+    <header className='bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50'>
+      <nav className='container mx-auto flex justify-between items-center py-4 px-4'>
+        {/* Logo/Brand */}
+        <Link
+          href='/'
+          className='text-2xl font-bold text-black hover:text-gray-700 transition-colors duration-200'
+        >
           {globalSettings.title || 'Strapi CRM & E-Commerce'}
         </Link>
 
-        <div className='flex gap-4'>
-          <WarehouseSelect warehouses={globalSettings.warehouses || []} />
-        </div>
-
-        <div className='flex gap-4'>
-          <ul className='flex gap-4'>
+        {/* Navigation Links - Center */}
+        <nav className='hidden md:flex items-center'>
+          <ul className='flex items-center gap-8'>
             {links.map((link) => (
-              <NavLink key={link.href} href={link.href}>
+              <NavLink
+                key={link.href}
+                href={link.href}
+                className='text-black hover:text-gray-700 font-medium transition-colors duration-200 relative group'
+              >
                 {link.label}
+                <span className='absolute bottom-[-4px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-200'></span>
               </NavLink>
             ))}
           </ul>
-          <div className='text-gray-500'>
+        </nav>
+
+        {/* Right Side Actions */}
+        <div className='flex items-center gap-4'>
+          {/* Warehouse Select */}
+          <div className='hidden lg:block'>
+            <WarehouseSelect warehouses={globalSettings.warehouses || []} />
+          </div>
+
+          {/* User Menu */}
+          <div className='flex items-center'>
             {user ? (
               <UserMenuDropdown user={user} />
             ) : (
-              <Link href='/user/login'>Login</Link>
+              <Link
+                href='/user/login'
+                className='text-black hover:text-gray-700 font-medium px-4 py-2 border border-black rounded-lg hover:bg-black hover:text-white transition-all duration-200'
+              >
+                Login
+              </Link>
             )}
           </div>
+
+          {/* Shopping Cart */}
           <PopoverCart />
         </div>
       </nav>
+
+      {/* Mobile Navigation */}
+      <div className='md:hidden border-t border-gray-200 bg-white'>
+        <div className='container mx-auto px-4 py-2'>
+          <nav>
+            <ul className='flex flex-wrap gap-4 justify-center'>
+              {links.map((link) => (
+                <NavLink
+                  key={link.href}
+                  href={link.href}
+                  className='text-sm text-black hover:text-gray-700 font-medium py-1'
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </ul>
+          </nav>
+          <div className='mt-2 flex justify-center lg:hidden'>
+            <WarehouseSelect warehouses={globalSettings.warehouses || []} />
+          </div>
+        </div>
+      </div>
     </header>
   );
 }
