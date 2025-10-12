@@ -4,12 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ApiService from '@/service/ApiService';
 import { useEffect, useState } from 'react';
+import { CouponType } from '../types';
 import AddressesModal from './AddressesModal';
 
 export default function Shipping({
   onChange,
+  coupons,
 }: {
   onChange?: (changes: any) => void;
+  coupons?: CouponType[];
 }) {
   const [shippingMethods, setShippingMethods] = useState([] as any[]);
   const [selectedShippingMethod, setSelectedShippingMethod] =
@@ -22,12 +25,17 @@ export default function Shipping({
 
   const getShippingAmount = () => {
     if (selectedAddress && selectedShippingMethod) {
+      let couponIds: number[] = [];
+      if (coupons) {
+        couponIds = coupons.map((c) => c.id);
+      }
       ApiService.requestWithAuth(
         'POST',
         '/customers/shipping-methods/get-amount',
         {
           contactAddressId: selectedAddress.id,
           shippingMethodId: selectedShippingMethod.id,
+          couponIds: couponIds,
         }
       ).then((res) => {
         setShippingAmount(res);
@@ -52,7 +60,7 @@ export default function Shipping({
 
   useEffect(() => {
     getShippingAmount();
-  }, [selectedAddress, selectedShippingMethod]);
+  }, [selectedAddress, selectedShippingMethod, coupons]);
 
   useEffect(() => {
     onChange?.({

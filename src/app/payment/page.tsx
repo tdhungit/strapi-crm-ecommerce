@@ -86,6 +86,7 @@ export default function Payment() {
 
     setIsProcessing(true);
     try {
+      const couponIds = coupons.map((coupon) => coupon.id); // Initialize couponIds
       const order = await ApiService.requestWithAuth(
         'POST',
         '/customers/contact/orders',
@@ -94,7 +95,7 @@ export default function Payment() {
           warehouseId: warehouse.warehouse?.id,
           contactAddressId: shippingData.address?.id,
           shippingMethodId: shippingData.method?.id,
-          couponIds: [],
+          couponIds: couponIds,
         }
       );
       // Clear cart
@@ -138,10 +139,12 @@ export default function Payment() {
     if (!cart) return;
     let discount = 0;
     coupons.forEach((coupon) => {
-      if (coupon.discount_type === 'percentage') {
-        discount += cart?.subtotal * (coupon.discount_value / 100);
-      } else {
-        discount += coupon.discount_value;
+      if (coupon.coupon_type === 'Sale Order') {
+        if (coupon.discount_type === 'percentage') {
+          discount += cart?.subtotal * (coupon.discount_value / 100);
+        } else {
+          discount += coupon.discount_value;
+        }
       }
     });
     setCart((prev) => {
@@ -217,7 +220,7 @@ export default function Payment() {
 
           {/* Shipping */}
           <div className='mt-4'>
-            <Shipping onChange={handleChangeShipping} />
+            <Shipping coupons={coupons} onChange={handleChangeShipping} />
           </div>
 
           {/* Payment Methods */}
@@ -317,11 +320,20 @@ export default function Payment() {
                     </span>
                   </div>
                 )}
-                {shippingData?.amount.total > 0 && (
-                  <div className='flex justify-between'>
-                    <span>Shipping</span>
-                    <span>${shippingData?.amount.total.toFixed(2)}</span>
-                  </div>
+                {shippingData?.amount && shippingData.amount.total > 0 && (
+                  <>
+                    <div className='flex justify-between'>
+                      <span>Shipping</span>
+                      <span>${shippingData?.amount.total.toFixed(2)}</span>
+                    </div>
+                    <div className='flex justify-between text-green-600'>
+                      <span>Shipping Discount</span>
+                      <span>
+                        -$
+                        {shippingData?.amount.discount.toFixed(2)}
+                      </span>
+                    </div>
+                  </>
                 )}
                 <Separator />
                 <div className='flex justify-between'>

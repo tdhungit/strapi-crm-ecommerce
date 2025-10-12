@@ -45,7 +45,12 @@ export interface Cart {
 export interface ShippingDataType {
   address: any;
   method: any;
-  amount: any;
+  amount: {
+    subtotal: number;
+    discount: number;
+    total: number;
+    couponId: number;
+  };
 }
 
 export interface CouponType {

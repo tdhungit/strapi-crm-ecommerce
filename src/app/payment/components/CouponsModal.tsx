@@ -130,11 +130,14 @@ export default function CouponsModal({
                                 </div>
                               </div>
                               <div className='text-xs text-muted-foreground mt-0.5'>
-                                Code: <span className='font-mono'>{c.code}</span> •
+                                Code:{' '}
+                                <span className='font-mono'>{c.code}</span> •
                                 Discount: {formatDiscount(c)}
                               </div>
                               {c.description ? (
-                                <div className='text-sm mt-1'>{c.description}</div>
+                                <div className='text-sm mt-1'>
+                                  {c.description}
+                                </div>
                               ) : null}
                             </div>
                           </li>
@@ -168,11 +171,14 @@ export default function CouponsModal({
                                 </div>
                               </div>
                               <div className='text-xs text-muted-foreground mt-0.5'>
-                                Code: <span className='font-mono'>{c.code}</span> •
+                                Code:{' '}
+                                <span className='font-mono'>{c.code}</span> •
                                 Discount: {formatDiscount(c)}
                               </div>
                               {c.description ? (
-                                <div className='text-sm mt-1'>{c.description}</div>
+                                <div className='text-sm mt-1'>
+                                  {c.description}
+                                </div>
                               ) : null}
                             </div>
                           </li>
@@ -189,11 +195,10 @@ export default function CouponsModal({
             <Button variant='outline' onClick={handleCancel}>
               Cancel
             </Button>
-            <Button
-              onClick={handleApply}
-              disabled={selectedCoupons.length === 0}
-            >
-              Apply ({selectedCoupons.length})
+            <Button onClick={handleApply}>
+              {selectedCoupons.length > 0
+                ? `Apply (${selectedCoupons.length})`
+                : `Apply`}
             </Button>
           </div>
         </div>
