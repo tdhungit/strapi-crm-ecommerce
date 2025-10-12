@@ -51,6 +51,7 @@ interface Order {
   discount_type: string;
   discount_amount: number;
   shipping_amount: number;
+  shipping_discount: number;
   tax_type: string;
   tax_amount: number;
   total_amount: number;
@@ -136,12 +137,7 @@ export default function MyOrderDetail({ order }: { order: Order }) {
                       {detail.discount_amount > 0 && (
                         <span className='text-green-600'>
                           -$
-                          {(detail.discount_type === 'percentage'
-                            ? detail.unit_price *
-                              detail.quantity *
-                              (detail.discount_amount / 100)
-                            : detail.discount_amount
-                          ).toFixed(2)}
+                          {detail.discount_amount.toFixed(2)}
                         </span>
                       )}
                     </div>
@@ -173,10 +169,7 @@ export default function MyOrderDetail({ order }: { order: Order }) {
                   <span>Discount</span>
                   <span>
                     -$
-                    {(order.discount_type === 'percentage'
-                      ? order.subtotal * (order.discount_amount / 100)
-                      : order.discount_amount
-                    ).toFixed(2)}
+                    {order.discount_amount.toFixed(2)}
                   </span>
                 </div>
               )}
@@ -186,20 +179,19 @@ export default function MyOrderDetail({ order }: { order: Order }) {
                   <span>${order.shipping_amount.toFixed(2)}</span>
                 </div>
               )}
+              {order.shipping_discount > 0 && (
+                <div className='flex justify-between text-sm text-green-600'>
+                  <span>Shipping Discount</span>
+                  <span>
+                    -$
+                    {order.shipping_discount.toFixed(2)}
+                  </span>
+                </div>
+              )}
               {order.tax_amount > 0 && (
                 <div className='flex justify-between text-sm'>
                   <span>Tax</span>
-                  <span>
-                    $
-                    {(order.tax_type === 'percentage'
-                      ? (order.subtotal -
-                          (order.discount_type === 'percentage'
-                            ? order.subtotal * (order.discount_amount / 100)
-                            : order.discount_amount)) *
-                        (order.tax_amount / 100)
-                      : order.tax_amount
-                    ).toFixed(2)}
-                  </span>
+                  <span>${order.tax_amount.toFixed(2)}</span>
                 </div>
               )}
               <Separator />
