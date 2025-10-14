@@ -196,7 +196,7 @@ export default function Header({
             ) : (
               <Link
                 href='/user/login'
-                className='text-black hover:text-gray-700 font-medium px-4 py-2 border border-black rounded-lg hover:bg-black hover:text-white transition-all duration-200'
+                className='text-black font-medium px-4 py-1 border border-gray-200 rounded-lg hover:bg-black hover:text-white transition-all duration-200'
               >
                 Login
               </Link>
