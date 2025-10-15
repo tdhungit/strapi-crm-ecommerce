@@ -1,8 +1,13 @@
 'use client';
 
+import ApiService from '@/service/ApiService';
+import { initializeApp } from 'firebase/app';
+import { Auth, getAuth } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import LoginForm from '../components/LoginForm';
+import FacebookLogin from './components/FacebookLogin';
 import GoogleLogin from './components/GoogleLogin';
 
 export default function Login() {
@@ -10,6 +15,18 @@ export default function Login() {
   const searchParams = useSearchParams();
 
   const returnTo = searchParams.get('returnTo');
+
+  const [auth, setAuth] = useState<Auth | null>(null);
+
+  useEffect(() => {
+    ApiService.request('GET', '/customers/contact/firebase-config').then(
+      (res: any) => {
+        const app = initializeApp(res);
+        const auth = getAuth(app);
+        setAuth(auth);
+      }
+    );
+  }, []);
 
   return (
     <div className='bg-white/50 rounded-xl py-7 px-8 overflow-hidden flex items-center justify-center'>
@@ -37,9 +54,16 @@ export default function Login() {
           />
         </div>
 
-        <div className='mt-1'>
-          <GoogleLogin />
-        </div>
+        {auth && (
+          <>
+            <div className='mt-1'>
+              <GoogleLogin auth={auth} />
+            </div>
+            <div className='mt-1'>
+              <FacebookLogin auth={auth} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

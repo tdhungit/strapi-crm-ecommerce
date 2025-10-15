@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import ApiService from '@/service/ApiService';
+import UserService from '@/service/UserService';
 import { AlertCircle } from 'lucide-react';
 import { useState } from 'react';
 
@@ -15,7 +16,7 @@ export default function RegisterForm({
   autoLogin?: boolean;
   onSuccess?: (contact: { token: string; [key: string]: any }) => void;
 }) {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     firstName: '',
     lastName: '',
     email: '',
@@ -30,7 +31,7 @@ export default function RegisterForm({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [name]: value,
     }));
@@ -92,14 +93,10 @@ export default function RegisterForm({
     try {
       setIsLoading(true);
 
-      const contact = await ApiService.request(
-        'POST',
-        '/customers/contact/register',
-        {
-          ...formData,
-          autoLogin,
-        }
-      );
+      const contact = await UserService.register({
+        ...formData,
+        autoLogin,
+      });
 
       // Success
       onSuccess?.(contact);

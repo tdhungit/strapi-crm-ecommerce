@@ -1,5 +1,19 @@
 import ApiService from './ApiService';
 
+export interface RegisterDataType {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password?: string;
+  confirmPassword?: string;
+  login_provider?: string;
+  login_provider_id?: string;
+  autoLogin?: boolean;
+  avatar?: string;
+  firebaseToken?: string;
+}
+
 class UserService {
   isLogin() {
     return !!localStorage.getItem('token');
@@ -30,6 +44,10 @@ class UserService {
         newPassword: data.newPassword,
       }
     );
+  }
+
+  register(formData: RegisterDataType) {
+    return ApiService.request('POST', '/customers/contact/register', formData);
   }
 }
 
