@@ -24,12 +24,12 @@ export default function ProductVariants({ product }: Props) {
       : 0;
 
   return (
-    <div className='space-y-6'>
+    <div className='space-y-4'>
       {/* Price Section */}
-      <div className='space-y-3'>
-        <h2 className='text-lg font-semibold text-gray-900'>Price</h2>
-        <div className='flex items-baseline space-x-3'>
-          <span className='text-3xl font-bold text-gray-900'>
+      <div className='space-y-2'>
+        <h2 className='text-base font-semibold text-gray-900'>Price</h2>
+        <div className='flex items-baseline space-x-2'>
+          <span className='text-2xl font-bold text-gray-900'>
             {formatCurrency(currentPrice)}
           </span>
           {originalPrice && originalPrice > currentPrice && (
@@ -47,14 +47,14 @@ export default function ProductVariants({ product }: Props) {
 
       {/* Variants Selection */}
       {product.product_variants && product.product_variants.length > 0 && (
-        <div className='space-y-4'>
-          <h3 className='text-lg font-semibold text-gray-900'>Options</h3>
+        <div className='space-y-3'>
+          <h3 className='text-base font-semibold text-gray-900'>Options</h3>
           <div className='flex flex-wrap gap-2'>
             {product.product_variants.map((variant: any) => (
               <button
                 type='button'
                 key={variant.id}
-                className={`py-2 px-4 border rounded-xl cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
+                className={`py-1 px-4 border rounded-xl cursor-pointer hover:bg-gray-100 transition-all duration-200 ${
                   selectedVariant?.id === variant.id
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200'
@@ -76,8 +76,8 @@ export default function ProductVariants({ product }: Props) {
       )}
 
       {/* Quantity Selector */}
-      <div className='space-y-4'>
-        <h3 className='text-lg font-semibold text-gray-900'>Quantity</h3>
+      <div className='space-y-3'>
+        <h3 className='text-base font-semibold text-gray-900'>Quantity</h3>
         <div className='flex items-center space-x-4'>
           <div className='flex items-center border border-gray-300 rounded-lg'>
             <button
@@ -132,13 +132,13 @@ export default function ProductVariants({ product }: Props) {
       </div>
 
       {/* Add to Cart Section */}
-      <div className='space-y-4 pt-6 border-t border-gray-200'>
+      <div className='space-y-3 pt-4 border-t border-gray-200'>
         {selectedVariant && (
           <div className='space-y-3'>
             <AddToCartButton variant={selectedVariant} />
 
             {/* Wishlist Button */}
-            <button className='w-full flex items-center justify-center space-x-2 py-3 px-6 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors'>
+            <button className='w-full flex items-center justify-center space-x-2 py-1 px-6 border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors'>
               <svg
                 className='w-5 h-5 text-gray-600'
                 fill='none'
@@ -152,14 +152,16 @@ export default function ProductVariants({ product }: Props) {
                   d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
                 />
               </svg>
-              <span className='font-medium text-gray-700'>Add to Wishlist</span>
+              <span className='font-medium text-gray-700 text-sm cursor-pointer'>
+                Add to Wishlist
+              </span>
             </button>
           </div>
         )}
       </div>
 
       {/* Product Info */}
-      <div className='space-y-3 pt-6 border-t border-gray-200'>
+      <div className='space-y-2 pt-4 border-t border-gray-200'>
         <div className='flex items-center space-x-3 text-sm text-gray-600'>
           <svg
             className='w-4 h-4'

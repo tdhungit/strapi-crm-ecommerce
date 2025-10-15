@@ -62,9 +62,9 @@ export default async function ProductPage({ params }: PageProps) {
       {/* Main Product Section */}
       <div className='container mx-auto px-4 pb-12'>
         <div className='bg-white rounded-3xl shadow-xl overflow-hidden'>
-          <div className='grid grid-cols-1 lg:grid-cols-2 gap-0'>
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-0'>
             {/* Left Side - Images */}
-            <div className='relative bg-gray-50 p-8 lg:p-12'>
+            <div className='relative bg-gray-50 p-8 lg:p-12 lg:col-span-2'>
               <div className='sticky top-8'>
                 {/* Product Badge */}
                 {product.is_featured && (
@@ -91,31 +91,11 @@ export default async function ProductPage({ params }: PageProps) {
                     height='500px'
                   />
                 </div>
-
-                {/* Image Gallery Thumbnails */}
-                {product.images && product.images.length > 1 && (
-                  <div className='flex space-x-3 mt-6 justify-center'>
-                    {product.images
-                      .slice(0, 4)
-                      .map((image: any, index: number) => (
-                        <div
-                          key={index}
-                          className='w-16 h-16 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition-colors cursor-pointer'
-                        >
-                          <img
-                            src={image.url}
-                            alt={`${product.name} ${index + 1}`}
-                            className='w-full h-full object-cover'
-                          />
-                        </div>
-                      ))}
-                  </div>
-                )}
               </div>
             </div>
 
             {/* Right Side - Product Info */}
-            <div className='p-8 lg:p-12 space-y-8'>
+            <div className='p-6 lg:p-8 space-y-6 lg:col-span-1'>
               {/* Product Header */}
               <div className='space-y-4'>
                 <div className='flex items-center space-x-3'>
@@ -143,7 +123,7 @@ export default async function ProductPage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <h1 className='text-3xl lg:text-4xl font-bold text-gray-900 leading-tight'>
+                <h1 className='text-3xl lg:text-2xl font-bold text-gray-900 leading-tight'>
                   {product.name}
                 </h1>
 
@@ -173,7 +153,7 @@ export default async function ProductPage({ params }: PageProps) {
               </div>
 
               {/* Product Variants */}
-              <div className='bg-gray-50 rounded-2xl p-6'>
+              <div className='bg-gray-50 px-4 py-2 rounded-xl'>
                 <ProductVariants product={product} />
               </div>
 
