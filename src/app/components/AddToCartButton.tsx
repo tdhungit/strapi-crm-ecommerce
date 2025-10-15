@@ -39,7 +39,7 @@ export default function AddToCartButton({ variant }: Props) {
 
   return (
     <>
-      <Button className='cursor-pointer' onClick={handleAdd}>
+      <Button className='w-full cursor-pointer' onClick={handleAdd}>
         Add to Cart
       </Button>
     </>
