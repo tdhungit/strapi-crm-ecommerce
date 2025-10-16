@@ -110,12 +110,16 @@ export default async function ProductPage({ params }: PageProps) {
                   <div className='flex items-center space-x-2'>
                     <div
                       className={`w-2 h-2 rounded-full ${
-                        product.stock > 0 ? 'bg-green-500' : 'bg-red-500'
+                        product.stock_quantity > 0
+                          ? 'bg-green-500'
+                          : 'bg-red-500'
                       }`}
                     />
                     <span
                       className={`text-sm font-medium ${
-                        product.stock > 0 ? 'text-green-600' : 'text-red-600'
+                        product.stock_quantity > 0
+                          ? 'text-green-600'
+                          : 'text-red-600'
                       }`}
                     >
                       {product.stock_quantity > 0 ? 'In Stock' : 'Out of Stock'}
