@@ -2,9 +2,13 @@
 
 import { formatCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import { useState } from 'react';
 import ProductImages from './ProductImages';
+import ProductSummaryModal from './ProductSummaryModal';
 
 export default function ProductBlock({ product }: { product: any }) {
+  const [openProductSummary, setOpenProductSummary] = useState(false);
+
   const getProductSlug = () => {
     if (!product.slug) return product.name.toLowerCase().replace(/\s/g, '-');
     return product.slug;
@@ -22,7 +26,13 @@ export default function ProductBlock({ product }: { product: any }) {
 
           {/* Quick view button */}
           <div className='absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-            <button className='bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full shadow-lg transition-all duration-200'>
+            <button
+              className='bg-white bg-opacity-90 hover:bg-opacity-100 p-2 rounded-full shadow-lg transition-all duration-200'
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenProductSummary(true);
+              }}
+            >
               <svg
                 className='w-4 h-4 text-gray-700'
                 fill='none'
@@ -122,12 +132,9 @@ export default function ProductBlock({ product }: { product: any }) {
             </div>
 
             {/* Add to cart button */}
-            <button
+            <Link
               className='bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors duration-200 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0'
-              onClick={(e) => {
-                e.preventDefault();
-                // Add to cart logic here
-              }}
+              href={`/product/${product.slug}/${product.id}`}
             >
               <svg
                 className='w-4 h-4'
@@ -142,7 +149,7 @@ export default function ProductBlock({ product }: { product: any }) {
                   d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
                 />
               </svg>
-            </button>
+            </Link>
           </div>
 
           {/* Stock status */}
@@ -166,6 +173,12 @@ export default function ProductBlock({ product }: { product: any }) {
           )}
         </div>
       </Link>
+
+      <ProductSummaryModal
+        product={product}
+        open={openProductSummary}
+        onOpenChange={setOpenProductSummary}
+      />
     </div>
   );
 }
