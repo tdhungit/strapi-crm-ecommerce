@@ -18,29 +18,32 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-const globalSettings = await getGlobalSettings();
-
-export const metadata: Metadata = {
-  title: {
-    template: '%s | ' + (globalSettings.title || 'Strapi CRM & E-Commerce'),
-    default: globalSettings.title || 'Strapi CRM & E-Commerce',
-  },
-  description:
-    globalSettings.description ||
-    globalSettings.slogan ||
-    'Strapi CRM & E-Commerce',
-  icons: {
-    icon: globalSettings.favicon
-      ? getMediaUrl(globalSettings.favicon)
-      : '/favicon.ico',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const globalSettings = await getGlobalSettings();
+  return {
+    title: {
+      template: '%s | ' + (globalSettings.title || 'Strapi CRM & E-Commerce'),
+      default: globalSettings.title || 'Strapi CRM & E-Commerce',
+    },
+    description:
+      globalSettings.description ||
+      globalSettings.slogan ||
+      'Strapi CRM & E-Commerce',
+    icons: {
+      icon: globalSettings.favicon
+        ? getMediaUrl(globalSettings.favicon)
+        : '/favicon.ico',
+    },
+  };
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const globalSettings = await getGlobalSettings();
+
   return (
     <html lang='en'>
       <body
