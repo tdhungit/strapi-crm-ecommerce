@@ -2,7 +2,8 @@ import axios from 'axios';
 
 class ApiService {
   private readonly API_URL =
-    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
+    process.env.NEXT_PUBLIC_API_URL ||
+    'https://github.com/tdhungit/strapi-crm-api';
 
   get API_URL_PUBLIC() {
     return this.API_URL || '';
