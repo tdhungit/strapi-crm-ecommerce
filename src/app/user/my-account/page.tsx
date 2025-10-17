@@ -37,7 +37,9 @@ function MyAccountComponent() {
 }
 
 export default function MyAccountPage() {
-  <Suspense fallback={<div>Loading...</div>}>
-    <MyAccountComponent />
-  </Suspense>;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MyAccountComponent />
+    </Suspense>
+  );
 }
