@@ -22,7 +22,11 @@ export default function Checkout() {
     if (UserService.isLogin()) {
       ApiService.requestWithAuth('POST', '/customers/contact/cart', {
         localCart: cart,
-      }).then();
+      })
+        .then()
+        .catch((e) => {
+          console.log('error', e);
+        });
     }
   }, [cart]);
 
@@ -55,9 +59,13 @@ export default function Checkout() {
   const handleMergeCart = () => {
     ApiService.requestWithAuth('POST', '/customers/contact/cart', {
       localCart: cart,
-    }).then(() => {
-      router.push('/payment');
-    });
+    })
+      .then(() => {
+        router.push('/payment');
+      })
+      .catch((e) => {
+        console.log('error', e);
+      });
   };
 
   if (!isClient) {

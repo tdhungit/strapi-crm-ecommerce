@@ -17,9 +17,13 @@ export default function CategoryProductsBlock({ category }: { category: any }) {
     ApiService.request('GET', '/sale-products', {
       categoryId: category.id,
       warehouseId: warehouse.id,
-    }).then((res) => {
-      setProducts(res.data);
-    });
+    })
+      .then((res) => {
+        setProducts(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, [category, warehouse]);
 
   return (

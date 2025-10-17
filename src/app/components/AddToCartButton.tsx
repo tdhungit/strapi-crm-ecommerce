@@ -20,7 +20,11 @@ export default function AddToCartButton({ variant }: Props) {
     if (UserService.isLogin()) {
       ApiService.requestWithAuth('POST', '/customers/contact/cart', {
         localCart: cart,
-      }).then();
+      })
+        .then()
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }, [cart]);
 

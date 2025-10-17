@@ -92,9 +92,11 @@ export default function AddressFormModal({
   // Load countries when modal opens
   useEffect(() => {
     if (open) {
-      ApiService.request('GET', '/address/countries').then((res: any) =>
-        setCountries(res || [])
-      );
+      ApiService.request('GET', '/address/countries')
+        .then((res: any) => setCountries(res || []))
+        .catch(() => {
+          setCountries([]);
+        });
     }
   }, [open]);
 
@@ -108,10 +110,11 @@ export default function AddressFormModal({
       setCities([]);
       resetField('state');
       resetField('city');
-      ApiService.request(
-        'GET',
-        `/address/countries/${country}/states`
-      ).then((res: any) => setStates(res || []));
+      ApiService.request('GET', `/address/countries/${country}/states`)
+        .then((res: any) => setStates(res || []))
+        .catch(() => {
+          setStates([]);
+        });
     } else {
       setStates([]);
       setCities([]);
@@ -126,10 +129,11 @@ export default function AddressFormModal({
     if (stateVal) {
       setCities([]);
       resetField('city');
-      ApiService.request(
-        'GET',
-        `/address/states/${stateVal}/cities`
-      ).then((res: any) => setCities(res || []));
+      ApiService.request('GET', `/address/states/${stateVal}/cities`)
+        .then((res: any) => setCities(res || []))
+        .catch(() => {
+          setCities([]);
+        });
     } else {
       setCities([]);
       resetField('city');
@@ -164,7 +168,7 @@ export default function AddressFormModal({
 
   // Helper for showing error text
   const ErrorText = ({ msg }: { msg?: string }) =>
-    msg ? <span className="text-xs text-destructive mt-1">{msg}</span> : null;
+    msg ? <span className='text-xs text-destructive mt-1'>{msg}</span> : null;
 
   // Compose placeholders
   const countryPlaceholder = useMemo(
@@ -192,32 +196,32 @@ export default function AddressFormModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className='sm:max-w-lg'>
         <DialogHeader>
           <DialogTitle>Add shipping address</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div className="grid gap-2">
-            <Label htmlFor="fullName">
-              Full name <span className="text-destructive">*</span>
+        <form onSubmit={onSubmit} className='space-y-4'>
+          <div className='grid gap-2'>
+            <Label htmlFor='fullName'>
+              Full name <span className='text-destructive'>*</span>
             </Label>
             <Input
-              id="fullName"
-              placeholder="John Doe"
+              id='fullName'
+              placeholder='John Doe'
               {...register('fullName', { required: 'Full name is required' })}
             />
             <ErrorText msg={errors.fullName?.message} />
           </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="email">
-              Email <span className="text-destructive">*</span>
+          <div className='grid gap-2'>
+            <Label htmlFor='email'>
+              Email <span className='text-destructive'>*</span>
             </Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="<EMAIL>"
+              id='email'
+              type='email'
+              placeholder='<EMAIL>'
               {...register('email', {
                 required: 'Email is required',
                 pattern: {
@@ -229,39 +233,39 @@ export default function AddressFormModal({
             <ErrorText msg={errors.email?.message} />
           </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="phone">
-              Phone <span className="text-destructive">*</span>
+          <div className='grid gap-2'>
+            <Label htmlFor='phone'>
+              Phone <span className='text-destructive'>*</span>
             </Label>
             <Input
-              id="phone"
-              inputMode="tel"
-              placeholder="+1 555 123 4567"
+              id='phone'
+              inputMode='tel'
+              placeholder='+1 555 123 4567'
               {...register('phone', { required: 'Phone is required' })}
             />
             <ErrorText msg={errors.phone?.message} />
           </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="address">
-              Address <span className="text-destructive">*</span>
+          <div className='grid gap-2'>
+            <Label htmlFor='address'>
+              Address <span className='text-destructive'>*</span>
             </Label>
             <Input
-              id="address"
-              placeholder="123 Main St"
+              id='address'
+              placeholder='123 Main St'
               {...register('address', { required: 'Address is required' })}
             />
             <ErrorText msg={errors.address?.message} />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="grid gap-2">
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+            <div className='grid gap-2'>
               <Label>
-                Country <span className="text-destructive">*</span>
+                Country <span className='text-destructive'>*</span>
               </Label>
               <Controller
                 control={control}
-                name="country"
+                name='country'
                 rules={{ required: 'Country is required' }}
                 render={({ field }) => (
                   <>
@@ -271,7 +275,7 @@ export default function AddressFormModal({
                         field.onChange(val);
                       }}
                     >
-                      <SelectTrigger aria-required className="w-full">
+                      <SelectTrigger aria-required className='w-full'>
                         <SelectValue placeholder={countryPlaceholder} />
                       </SelectTrigger>
                       <SelectContent>
@@ -288,13 +292,13 @@ export default function AddressFormModal({
               />
             </div>
 
-            <div className="grid gap-2">
+            <div className='grid gap-2'>
               <Label>
-                State/Province <span className="text-destructive">*</span>
+                State/Province <span className='text-destructive'>*</span>
               </Label>
               <Controller
                 control={control}
-                name="state"
+                name='state'
                 rules={{ required: 'State/Province is required' }}
                 render={({ field }) => (
                   <>
@@ -303,7 +307,7 @@ export default function AddressFormModal({
                       onValueChange={(val) => field.onChange(val)}
                       disabled={!country || states.length === 0}
                     >
-                      <SelectTrigger aria-required className="w-full">
+                      <SelectTrigger aria-required className='w-full'>
                         <SelectValue placeholder={statePlaceholder} />
                       </SelectTrigger>
                       <SelectContent>
@@ -321,14 +325,14 @@ export default function AddressFormModal({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="grid gap-2">
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+            <div className='grid gap-2'>
               <Label>
-                City <span className="text-destructive">*</span>
+                City <span className='text-destructive'>*</span>
               </Label>
               <Controller
                 control={control}
-                name="city"
+                name='city'
                 rules={{ required: 'City is required' }}
                 render={({ field }) => (
                   <>
@@ -337,7 +341,7 @@ export default function AddressFormModal({
                       onValueChange={(val) => field.onChange(val)}
                       disabled={!stateVal || cities.length === 0}
                     >
-                      <SelectTrigger aria-required className="w-full">
+                      <SelectTrigger aria-required className='w-full'>
                         <SelectValue placeholder={cityPlaceholder} />
                       </SelectTrigger>
                       <SelectContent>
@@ -354,13 +358,13 @@ export default function AddressFormModal({
               />
             </div>
 
-            <div className="grid gap-2">
-              <Label htmlFor="postalCode">
-                Postal code <span className="text-destructive">*</span>
+            <div className='grid gap-2'>
+              <Label htmlFor='postalCode'>
+                Postal code <span className='text-destructive'>*</span>
               </Label>
               <Input
-                id="postalCode"
-                inputMode="numeric"
+                id='postalCode'
+                inputMode='numeric'
                 {...register('postalCode', {
                   required: 'Postal code is required',
                 })}
@@ -369,16 +373,16 @@ export default function AddressFormModal({
             </div>
           </div>
 
-          <DialogFooter className="pt-2">
+          <DialogFooter className='pt-2'>
             <Button
-              type="button"
-              variant="ghost"
+              type='button'
+              variant='ghost'
               onClick={() => onOpenChange?.(false)}
               disabled={isSubmitting}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting}>
+            <Button type='submit' disabled={isSubmitting}>
               {isSubmitting ? 'Saving...' : 'Save address'}
             </Button>
           </DialogFooter>

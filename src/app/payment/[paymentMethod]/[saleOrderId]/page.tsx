@@ -41,6 +41,9 @@ export default function PaymentMethod({ params }: Props) {
       .then((res) => {
         setOrder(res);
       })
+      .catch((err) => {
+        console.log(err);
+      })
       .finally(() => setOrderLoading(false));
 
     ApiService.request(
@@ -49,6 +52,9 @@ export default function PaymentMethod({ params }: Props) {
     )
       .then((res) => {
         setPaymentMethod(res);
+      })
+      .catch((err) => {
+        console.log(err);
       })
       .finally(() => setPaymentMethodLoading(false));
   }, [saleOrderId, paymentMethodName]);

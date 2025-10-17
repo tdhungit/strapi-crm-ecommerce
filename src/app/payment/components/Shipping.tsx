@@ -37,9 +37,13 @@ export default function Shipping({
           shippingMethodId: selectedShippingMethod.id,
           couponIds: couponIds,
         }
-      ).then((res) => {
-        setShippingAmount(res);
-      });
+      )
+        .then((res) => {
+          setShippingAmount(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -48,14 +52,15 @@ export default function Shipping({
       setShippingMethods(res);
     });
 
-    ApiService.requestWithAuth(
-      'GET',
-      '/customers/contact-addresses/default'
-    ).then((res) => {
-      if (res.address) {
-        setSelectedAddress(res.address);
-      }
-    });
+    ApiService.requestWithAuth('GET', '/customers/contact-addresses/default')
+      .then((res) => {
+        if (res.address) {
+          setSelectedAddress(res.address);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   useEffect(() => {

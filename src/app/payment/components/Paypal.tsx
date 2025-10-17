@@ -27,7 +27,11 @@ export default function Paypal({
       {
         saleOrderId: order.id,
       }
-    ).then((res) => res.id);
+    )
+      .then((res) => res.id)
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const onApprove = (data: any) => {
@@ -37,9 +41,13 @@ export default function Paypal({
       {
         saleOrderId: order.id,
       }
-    ).then((orderData: any) => {
-      onSuccess?.(orderData);
-    });
+    )
+      .then((orderData: any) => {
+        onSuccess?.(orderData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (

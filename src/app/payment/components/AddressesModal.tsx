@@ -42,11 +42,13 @@ export default function AddressesModal({
 
   useEffect(() => {
     if (!open) return;
-    ApiService.requestWithAuth('GET', '/customers/contact-addresses').then(
-      (res: Address[]) => {
+    ApiService.requestWithAuth('GET', '/customers/contact-addresses')
+      .then((res: Address[]) => {
         setAddresses(res || []);
-      }
-    );
+      })
+      .catch(() => {
+        setAddresses([]);
+      });
   }, [open, refreshing]);
 
   // Set default selection whenever addresses change

@@ -100,9 +100,13 @@ export default function Stripe({
           returnUrl:
             process.env.NEXT_PUBLIC_URL + `/payment/stripe/${order.id}/success`,
         }
-      ).then((res) => {
-        setClientSecret(res.client_secret);
-      });
+      )
+        .then((res) => {
+          setClientSecret(res.client_secret);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [order]);
 

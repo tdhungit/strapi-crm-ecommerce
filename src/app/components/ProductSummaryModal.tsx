@@ -28,9 +28,13 @@ export default function ProductSummaryModal({
       const date = dayjs().format('YYYY-MM-DD');
       ApiService.request('GET', `/sale-products/${basicProduct.id}`, {
         date,
-      }).then((product) => {
-        setProduct(product);
-      });
+      })
+        .then((product) => {
+          setProduct(product);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }, [basicProduct]);
 

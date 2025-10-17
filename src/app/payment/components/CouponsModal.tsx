@@ -37,9 +37,13 @@ export default function CouponsModal({
   // Load coupons
   useEffect(() => {
     if (!open) return;
-    getAvailableCoupons().then((res) => {
-      setCoupons(Array.isArray(res) ? res : []);
-    });
+    getAvailableCoupons()
+      .then((res) => {
+        setCoupons(Array.isArray(res) ? res : []);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, [open]);
 
   // Initialize selection from prop when modal opens or prop changes

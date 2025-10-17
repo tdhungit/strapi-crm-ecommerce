@@ -32,13 +32,17 @@ export default function ConfirmMergeAccount({
         login_provider: socialUser.login_provider,
         login_provider_id: socialUser.login_provider_id,
         firebaseToken: socialUser.firebaseToken,
-      }).then((res) => {
-        if (res?.token) {
-          localStorage.setItem('token', res.token);
-          dispatch(setTokenStore(res.token));
-          onSuccess();
-        }
-      });
+      })
+        .then((res) => {
+          if (res?.token) {
+            localStorage.setItem('token', res.token);
+            dispatch(setTokenStore(res.token));
+            onSuccess();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 

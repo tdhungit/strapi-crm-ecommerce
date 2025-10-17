@@ -113,20 +113,24 @@ export default function Header({
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    ApiService.request('GET', '/product-categories').then((categories: any) => {
-      const _links = [{ href: '/', label: 'Home' }];
-      if (categories?.data && categories.data.length > 0) {
-        categories.data.forEach((category: any) => {
-          _links.push({
-            href: `/category/${category.slug}/${category.id}`,
-            label: category.name,
+    ApiService.request('GET', '/product-categories')
+      .then((categories: any) => {
+        const _links = [{ href: '/', label: 'Home' }];
+        if (categories?.data && categories.data.length > 0) {
+          categories.data.forEach((category: any) => {
+            _links.push({
+              href: `/category/${category.slug}/${category.id}`,
+              label: category.name,
+            });
           });
-        });
-      }
-      _links.push({ href: '/about-us', label: 'About Us' });
+        }
+        _links.push({ href: '/about-us', label: 'About Us' });
 
-      setLinks(_links);
-    });
+        setLinks(_links);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   useEffect(() => {
