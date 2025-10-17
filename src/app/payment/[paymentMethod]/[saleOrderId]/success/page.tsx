@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import MyOrderDetail from '@/app/user/components/MyOrderDetail';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import ApiService from '@/service/ApiService';
