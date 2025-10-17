@@ -2,6 +2,8 @@ import CategoryProductsBlock from '@/app/components/CategoryProductsBlock';
 import ApiService from '@/service/ApiService';
 import { ResolvingMetadata } from 'next';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ slug: string; id: string }>;
   searchParams: { [key: string]: string | string[] | undefined };

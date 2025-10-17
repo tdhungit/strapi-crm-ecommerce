@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 class ApiService {
-  private readonly API_URL = process.env.NEXT_PUBLIC_API_URL;
-  
+  private readonly API_URL =
+    process.env.NEXT_PUBLIC_API_URL || 'http://localhost:1337';
+
   get API_URL_PUBLIC() {
     return this.API_URL || '';
   }

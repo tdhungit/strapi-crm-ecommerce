@@ -4,6 +4,8 @@ import ApiService from '@/service/ApiService';
 import dayjs from 'dayjs';
 import ProductVariants from '../../components/ProductVariants';
 
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ slug: string; id: string }>;
 }
