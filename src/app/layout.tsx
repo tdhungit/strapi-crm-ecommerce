@@ -19,7 +19,13 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const globalSettings = await getGlobalSettings();
+  let globalSettings;
+  try {
+    globalSettings = await getGlobalSettings();
+  } catch (error) {
+    globalSettings = {};
+  }
+
   return {
     title: {
       template: '%s | ' + (globalSettings.title || 'Strapi CRM & E-Commerce'),
@@ -42,7 +48,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const globalSettings = await getGlobalSettings();
+  let globalSettings;
+  try {
+    globalSettings = await getGlobalSettings();
+  } catch (error) {
+    globalSettings = {};
+  }
 
   return (
     <html lang='en'>

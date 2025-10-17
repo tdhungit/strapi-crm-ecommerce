@@ -10,9 +10,16 @@ import ApiService from '@/service/ApiService';
 import CategoryProductsBlock from './components/CategoryProductsBlock';
 
 export default async function Home() {
-  const homepage = await ApiService.request('GET', '/home-page', {
-    populate: '*',
-  });
+  let homepage;
+  try {
+    homepage = await ApiService.request('GET', '/home-page', {
+      populate: '*',
+    });
+  } catch (error) {
+    homepage = {
+      data: {},
+    };
+  }
 
   return (
     <>
