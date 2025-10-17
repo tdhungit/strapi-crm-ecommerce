@@ -1,15 +1,18 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TabsContent } from '@radix-ui/react-tabs';
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import ChangePassword from '../components/ChangePassword';
 import MyAccount from '../components/MyAccount';
 import MyOrders from '../components/MyOrders';
 
-export default function MyAccountPage() {
+function MyAccountComponent() {
   const searchParams = useSearchParams();
-  const activeTab = searchParams.get('tab');
+  const activeTab = searchParams.get('tab') || 'my-account';
 
   return (
     <div className='bg-white/50 rounded-xl py-5 px-6 overflow-hidden'>
@@ -31,4 +34,10 @@ export default function MyAccountPage() {
       </Tabs>
     </div>
   );
+}
+
+export default function MyAccountPage() {
+  <Suspense fallback={<div>Loading...</div>}>
+    <MyAccountComponent />
+  </Suspense>;
 }

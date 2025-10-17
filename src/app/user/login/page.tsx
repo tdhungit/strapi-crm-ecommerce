@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { setTokenStore } from '@/app/stores/userSlice';
 import ApiService from '@/service/ApiService';
 import UserService, { RegisterDataType } from '@/service/UserService';
@@ -7,7 +9,7 @@ import { initializeApp } from 'firebase/app';
 import { Auth, getAuth, UserCredential } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'sonner';
 import LoginForm from '../components/LoginForm';
@@ -16,7 +18,7 @@ import FacebookLogin from './components/FacebookLogin';
 import GoogleLogin from './components/GoogleLogin';
 import { SocialUserType } from './types';
 
-export default function Login() {
+function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
@@ -127,5 +129,13 @@ export default function Login() {
         }}
       />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Login />
+    </Suspense>
   );
 }
