@@ -18,7 +18,7 @@ import FacebookLogin from './components/FacebookLogin';
 import GoogleLogin from './components/GoogleLogin';
 import { SocialUserType } from './types';
 
-function Login() {
+function LoginComponent() {
   const router = useRouter();
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
@@ -30,13 +30,15 @@ function Login() {
   const [socialUser, setSocialUser] = useState<SocialUserType>({});
 
   useEffect(() => {
-    ApiService.request('GET', '/customers/contact/firebase-config').then(
-      (res: any) => {
+    ApiService.request('GET', '/customers/contact/firebase-config')
+      .then((res: any) => {
         const app = initializeApp(res);
         const auth = getAuth(app);
         setAuth(auth);
-      }
-    );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   const onFirebaseLoginSuccess = async (result: UserCredential) => {
@@ -135,7 +137,7 @@ function Login() {
 export default function LoginPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Login />
+      <LoginComponent />
     </Suspense>
   );
 }
