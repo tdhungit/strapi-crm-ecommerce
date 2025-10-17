@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import CategoryProductsBlock from '@/app/components/CategoryProductsBlock';
 import ApiService from '@/service/ApiService';
 import { ResolvingMetadata } from 'next';

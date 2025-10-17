@@ -1,7 +1,5 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import CartItem from '@/app/components/CartItem';
 import { formatCurrency } from '@/lib/utils';
 import ApiService from '@/service/ApiService';

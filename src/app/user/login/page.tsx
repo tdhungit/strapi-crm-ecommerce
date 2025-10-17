@@ -1,7 +1,5 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import { setTokenStore } from '@/app/stores/userSlice';
 import ApiService from '@/service/ApiService';
 import UserService, { RegisterDataType } from '@/service/UserService';

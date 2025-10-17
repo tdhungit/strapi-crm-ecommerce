@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import StaticPage from '@/app/components/StaticPage';
 import ApiService from '@/service/ApiService';
 import { ResolvingMetadata } from 'next';

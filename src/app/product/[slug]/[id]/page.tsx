@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import ProductImages from '@/app/components/ProductImages';
 import ProductDescription from '@/app/product/components/ProductDescription';
 import ApiService from '@/service/ApiService';
