@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Carousel,
   CarouselContent,
@@ -7,19 +9,23 @@ import {
 } from '@/components/ui/carousel';
 import { getMediaUrl } from '@/lib/utils';
 import ApiService from '@/service/ApiService';
+import { useEffect, useState } from 'react';
 import CategoryProductsBlock from './components/CategoryProductsBlock';
 
-export default async function Home() {
-  let homepage;
-  try {
-    homepage = await ApiService.request('GET', '/home-page', {
+export default function Home() {
+  const [data, setData] = useState<any>({});
+
+  useEffect(() => {
+    ApiService.request('GET', '/home-page', {
       populate: '*',
-    });
-  } catch (error) {
-    homepage = {
-      data: {},
-    };
-  }
+    })
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch(() => {
+        setData({});
+      });
+  }, []);
 
   return (
     <>
@@ -31,7 +37,7 @@ export default async function Home() {
         }}
       >
         <CarouselContent>
-          {homepage.data.main_banners?.map(
+          {data.main_banners?.map(
             (banner: {
               id: number;
               href: string;
@@ -57,7 +63,7 @@ export default async function Home() {
         <CarouselNext className='right-[10px]' />
       </Carousel>
 
-      {homepage.data.product_categories?.map((category: any) => (
+      {data.product_categories?.map((category: any) => (
         <CategoryProductsBlock key={category.id} category={category} />
       ))}
     </>
