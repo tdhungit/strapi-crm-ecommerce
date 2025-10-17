@@ -17,9 +17,14 @@ import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import NavLink from '../NavLink';
 import UserMenuDropdown from './UserMenuDropdown';
 import WarehouseSelect from './WarehouseSelect';
+
+interface MenuLinkItem {
+  href: string;
+  label: string;
+  children?: MenuLinkItem[];
+}
 
 function PopoverCart() {
   const cart = useSelector((state: RootState) => state.cart.items);
@@ -109,19 +114,33 @@ export default function Header({
   const dispatch = useDispatch();
   const token = useSelector((state: RootState) => state.user.token);
 
-  const [links, setLinks] = useState<{ href: string; label: string }[]>([]);
+  const [links, setLinks] = useState<MenuLinkItem[]>([]);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    ApiService.request('GET', '/product-categories')
+    ApiService.request('GET', '/product-categories/extra/tree')
       .then((categories: any) => {
         const _links = [{ href: '/', label: 'Home' }];
-        if (categories?.data && categories.data.length > 0) {
-          categories.data.forEach((category: any) => {
-            _links.push({
+        if (categories?.length > 0) {
+          categories.forEach((category: any) => {
+            const linkItem: MenuLinkItem = {
               href: `/category/${category.slug}/${category.id}`,
               label: category.name,
-            });
+              children: [],
+            };
+
+            if (category.children?.length > 0) {
+              category.children.forEach((child: any) => {
+                const childLinkItem = {
+                  href: `/category/${child.slug}/${child.id}`,
+                  label: child.name,
+                };
+                linkItem.children = linkItem.children || [];
+                linkItem.children.push(childLinkItem);
+              });
+            }
+
+            _links.push(linkItem);
           });
         }
         _links.push({ href: '/about-us', label: 'About Us' });
@@ -174,14 +193,32 @@ export default function Header({
         <nav className='hidden md:flex items-center'>
           <ul className='flex items-center gap-8'>
             {links.map((link) => (
-              <NavLink
-                key={link.href}
-                href={link.href}
-                className='text-black hover:text-gray-700 font-medium transition-colors duration-200 relative group'
-              >
-                {link.label}
+              <li key={link.href} className='relative group'>
+                <Link
+                  href={link.href}
+                  className='text-black hover:text-gray-700 font-medium transition-colors duration-200 relative flex items-center gap-1'
+                >
+                  {link.label}
+                </Link>
                 <span className='absolute bottom-[-4px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-200'></span>
-              </NavLink>
+
+                {link.children && link.children.length > 0 && (
+                  <div className='pointer-events-none opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 absolute left-0 top-full mt-0 min-w-[220px] rounded-md border border-gray-200 bg-white shadow-lg z-50'>
+                    <ul className='py-2'>
+                      {link.children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            className='block px-4 py-2.5 text-sm text-black hover:bg-gray-100 transition-colors'
+                          >
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </li>
             ))}
           </ul>
         </nav>
@@ -216,15 +253,30 @@ export default function Header({
       <div className='md:hidden border-t border-gray-200 bg-white'>
         <div className='container mx-auto px-4 py-2'>
           <nav>
-            <ul className='flex flex-wrap gap-4 justify-center'>
+            <ul className='flex flex-col gap-2'>
               {links.map((link) => (
-                <NavLink
-                  key={link.href}
-                  href={link.href}
-                  className='text-sm text-black hover:text-gray-700 font-medium py-1'
-                >
-                  {link.label}
-                </NavLink>
+                <li key={link.href} className='flex flex-col'>
+                  <Link
+                    href={link.href}
+                    className='text-sm text-black hover:text-gray-700 font-medium py-1'
+                  >
+                    {link.label}
+                  </Link>
+                  {link.children && link.children.length > 0 && (
+                    <ul className='ml-3 pl-2 border-l border-gray-200 mt-1 flex flex-col gap-1'>
+                      {link.children.map((child) => (
+                        <li key={child.href}>
+                          <Link
+                            href={child.href}
+                            className='text-xs text-black/80 hover:text-black py-1 block'
+                          >
+                            {child.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
               ))}
             </ul>
           </nav>
