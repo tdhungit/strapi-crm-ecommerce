@@ -3,6 +3,7 @@ import { getMediaUrl } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Toaster } from 'sonner';
+import ChatBox from './components/layouts/ChatBox';
 import Footer from './components/layouts/Footer';
 import Header from './components/layouts/Header';
 import './globals.css';
@@ -69,6 +70,7 @@ export default async function RootLayout({
             <Footer globalSettings={globalSettings} />
           </div>
           <Toaster position='bottom-center' closeButton />
+          <ChatBox />
         </ReduxProvider>
       </body>
     </html>
