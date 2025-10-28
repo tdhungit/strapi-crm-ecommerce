@@ -21,6 +21,13 @@ class UserService {
 
   logout() {
     localStorage.removeItem('token');
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
+        localStorage.removeItem(key);
+        i--;
+      }
+    }
   }
 
   getAccessToken() {

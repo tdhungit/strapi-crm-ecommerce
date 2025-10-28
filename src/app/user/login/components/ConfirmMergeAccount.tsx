@@ -14,24 +14,30 @@ export default function ConfirmMergeAccount({
   onOpenChange,
   onSuccess,
   socialUser,
+  authService,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
   socialUser: SocialUserType;
+  authService: string;
 }) {
   const dispatch = useDispatch();
 
   const handleMergeAccount = async () => {
-    if (
-      socialUser?.login_provider &&
-      socialUser.login_provider_id &&
-      socialUser.firebaseToken
-    ) {
+    if (socialUser?.login_provider && socialUser.login_provider_id) {
+      let token;
+      if (authService === 'firebase') {
+        token = socialUser.firebaseToken;
+      } else if (authService === 'supabase') {
+        token = socialUser.supabaseToken;
+      }
+
       ApiService.request('POST', '/customers/contact/social-merge-to-local', {
+        authService,
         login_provider: socialUser.login_provider,
         login_provider_id: socialUser.login_provider_id,
-        firebaseToken: socialUser.firebaseToken,
+        token,
       })
         .then((res) => {
           if (res?.token) {

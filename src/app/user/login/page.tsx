@@ -3,8 +3,9 @@
 import { setTokenStore } from '@/app/stores/userSlice';
 import ApiService from '@/service/ApiService';
 import UserService, { RegisterDataType } from '@/service/UserService';
+import { createClient } from '@supabase/supabase-js';
 import { initializeApp } from 'firebase/app';
-import { Auth, getAuth, UserCredential } from 'firebase/auth';
+import { getAuth, UserCredential } from 'firebase/auth';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
@@ -23,16 +24,23 @@ function LoginComponent() {
 
   const returnTo = searchParams.get('returnTo');
 
-  const [auth, setAuth] = useState<Auth | null>(null);
+  const [authService, setAuthService] = useState<string>('');
+  const [auth, setAuth] = useState<any>(null);
   const [openMergeAccountDialog, setOpenMergeAccountDialog] = useState(false);
   const [socialUser, setSocialUser] = useState<SocialUserType>({});
 
   useEffect(() => {
-    ApiService.request('GET', '/customers/contact/firebase-config')
+    ApiService.request('GET', '/customers/contact/ecommerce-config')
       .then((res: any) => {
-        const app = initializeApp(res);
-        const auth = getAuth(app);
-        setAuth(auth);
+        setAuthService(res.authService);
+        if (res.authService === 'firebase') {
+          const app = initializeApp(res.firebase);
+          const auth = getAuth(app);
+          setAuth(auth);
+        } else if (res.authService === 'supabase') {
+          const supabase = createClient(res.supabase.url, res.supabase.apiKey);
+          setAuth(supabase);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -76,6 +84,53 @@ function LoginComponent() {
     }
   };
 
+  const onSupabaseLoginSuccess = async (result: {
+    accessToken: string;
+    login_provider: string;
+    login_provider_id: string;
+  }) => {
+    if (!result.accessToken) {
+      toast.error('Login failed');
+      return;
+    }
+
+    ApiService.request('POST', '/customers/contact/register-from-supabase', {
+      accessToken: result.accessToken,
+      login_provider: result.login_provider,
+      login_provider_id: result.login_provider_id,
+    })
+      .then((res: any) => {
+        setSocialUser({
+          login_provider: result.login_provider,
+          login_provider_id: result.login_provider_id,
+          supabaseToken: result.accessToken,
+        });
+
+        if (res.code === 'confirm_merge') {
+          setOpenMergeAccountDialog(true);
+          return;
+        }
+
+        localStorage.setItem('token', res.token);
+        dispatch(setTokenStore(res.token));
+        router.push('/');
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error(err.message || 'Register failed');
+      });
+  };
+
+  const onLoginSuccess = async (result: any) => {
+    if (authService === 'firebase') {
+      await onFirebaseLoginSuccess(result);
+    } else if (authService === 'supabase') {
+      await onSupabaseLoginSuccess(result);
+    } else {
+      toast.error('System can not handle this login method');
+    }
+  };
+
   return (
     <div className='bg-white/50 rounded-xl py-7 px-8 overflow-hidden flex items-center justify-center'>
       <div className='max-w-md w-full bg-card p-8 rounded-lg shadow-md my-10'>
@@ -102,18 +157,20 @@ function LoginComponent() {
           />
         </div>
 
-        {auth && (
+        {auth && authService && (
           <>
             <div className='mt-1'>
               <GoogleLogin
+                authService={authService}
                 auth={auth}
-                onLoginSuccess={onFirebaseLoginSuccess}
+                onLoginSuccess={onLoginSuccess}
               />
             </div>
             <div className='mt-1'>
               <FacebookLogin
+                authService={authService}
                 auth={auth}
-                onLoginSuccess={onFirebaseLoginSuccess}
+                onLoginSuccess={onLoginSuccess}
               />
             </div>
           </>
@@ -121,6 +178,7 @@ function LoginComponent() {
       </div>
 
       <ConfirmMergeAccount
+        authService={authService}
         socialUser={socialUser}
         open={openMergeAccountDialog}
         onOpenChange={setOpenMergeAccountDialog}
