@@ -15,16 +15,19 @@ export interface GlobalSettingType {
   logo?: string;
   footer?: string;
   warehouses?: WarehouseType[];
+  socials?: {
+    id: number;
+    title: string;
+    href: string;
+    icon: string;
+    target: string;
+  }[];
 }
 
 export async function getGlobalSettings(): Promise<GlobalSettingType> {
-  const res = await ApiService.request('GET', '/global-setting', {
-    populate: ['favicon', 'logo'],
-  });
-
   const [resSetting, resWarehouse] = await Promise.all([
     ApiService.request('GET', '/global-setting', {
-      populate: ['favicon', 'logo'],
+      populate: '*',
     }),
     ApiService.request('GET', '/warehouses'),
   ]);
