@@ -19,8 +19,8 @@ export default function Footer({
               Strapi E-Commerce Store
             </h3>
             <p className='text-gray-600 text-sm leading-relaxed'>
-              Your trusted partner for quality products and exceptional service.
-              We're committed to delivering the best shopping experience.
+              {globalSettings.description ||
+                'Your trusted partner for quality products and exceptional service.'}
             </p>
             <div className='flex space-x-2'>
               {/* Social Media Icons */}

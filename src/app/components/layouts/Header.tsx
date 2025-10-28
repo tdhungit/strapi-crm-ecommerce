@@ -184,8 +184,15 @@ export default function Header({
         {/* Logo/Brand */}
         <Link
           href='/'
-          className='text-2xl font-bold text-black hover:text-gray-700 transition-colors duration-200'
+          className='text-2xl font-bold text-black hover:text-gray-700 transition-colors duration-200 flex gap-2'
         >
+          {globalSettings.logo && (
+            <img
+              src={getMediaUrl(globalSettings.logo)}
+              alt={globalSettings.title || 'Strapi CRM & E-Commerce'}
+              className='h-[32px] object-cover'
+            />
+          )}
           {globalSettings.title || 'Strapi CRM & E-Commerce'}
         </Link>
 

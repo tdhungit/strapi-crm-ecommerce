@@ -12,7 +12,9 @@ export interface GlobalSettingType {
   slogan?: string;
   description?: string;
   favicon?: any;
-  logo?: string;
+  logo?: {
+    url: string;
+  };
   footer?: string;
   warehouses?: WarehouseType[];
   socials?: {
