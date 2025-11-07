@@ -13,8 +13,9 @@ import { formatCurrency, getMediaUrl } from '@/lib/utils';
 import ApiService from '@/service/ApiService';
 import UserService from '@/service/UserService';
 import { PopoverClose } from '@radix-ui/react-popover';
-import { ShoppingCart } from 'lucide-react';
+import { Search, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import UserMenuDropdown from './UserMenuDropdown';
@@ -114,8 +115,12 @@ export default function Header({
   const dispatch = useDispatch();
   const token = useSelector((state: RootState) => state.user.token);
 
+  const searchParams = useSearchParams();
+  const search = searchParams.get('keyword');
+
   const [links, setLinks] = useState<MenuLinkItem[]>([]);
   const [user, setUser] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     ApiService.request('GET', '/product-categories/extra/tree')
@@ -151,6 +156,10 @@ export default function Header({
         console.log(err);
       });
   }, []);
+
+  useEffect(() => {
+    setSearchQuery(search || '');
+  }, [search]);
 
   useEffect(() => {
     const accessToken = token || UserService.getAccessToken();
@@ -196,39 +205,24 @@ export default function Header({
           {globalSettings.title || 'Strapi CRM & E-Commerce'}
         </Link>
 
-        {/* Navigation Links - Center */}
-        <nav className='hidden md:flex items-center'>
-          <ul className='flex items-center gap-8'>
-            {links.map((link) => (
-              <li key={link.href} className='relative group'>
-                <Link
-                  href={link.href}
-                  className='text-black hover:text-gray-700 font-medium transition-colors duration-200 relative flex items-center gap-1'
-                >
-                  {link.label}
-                </Link>
-                <span className='absolute bottom-[-4px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-200'></span>
-
-                {link.children && link.children.length > 0 && (
-                  <div className='pointer-events-none opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 absolute left-0 top-full mt-0 min-w-[220px] rounded-md border border-gray-200 bg-white shadow-lg z-50'>
-                    <ul className='py-2'>
-                      {link.children.map((child) => (
-                        <li key={child.href}>
-                          <Link
-                            href={child.href}
-                            className='block px-4 py-2.5 text-sm text-black hover:bg-gray-100 transition-colors'
-                          >
-                            {child.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
+        {/* Search Bar - Desktop */}
+        <form
+          action='/search'
+          method='get'
+          className='hidden md:flex items-center flex-1 max-w-2xl mx-8'
+        >
+          <div className='relative w-full'>
+            <input
+              type='text'
+              name='keyword'
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder='Search products...'
+              className='w-full px-4 py-1 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all duration-200 bg-white shadow'
+            />
+            <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400' />
+          </div>
+        </form>
 
         {/* Right Side Actions */}
         <div className='flex items-center gap-4'>
@@ -256,9 +250,61 @@ export default function Header({
         </div>
       </nav>
 
+      {/* Navigation Menu - New Line */}
+      <div className='hidden md:block border-t border-gray-100 bg-gray-50'>
+        <div className='container mx-auto px-4'>
+          <nav className='flex items-center justify-center'>
+            <ul className='flex items-center gap-8 py-3'>
+              {links.map((link) => (
+                <li key={link.href} className='relative group'>
+                  <Link
+                    href={link.href}
+                    className='text-black hover:text-gray-700 font-medium transition-colors duration-200 relative flex items-center gap-1'
+                  >
+                    {link.label}
+                  </Link>
+                  <span className='absolute bottom-[-4px] left-0 w-0 h-0.5 bg-black group-hover:w-full transition-all duration-200'></span>
+
+                  {link.children && link.children.length > 0 && (
+                    <div className='pointer-events-none opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-200 absolute left-[-7px] top-[25px] mt-0 min-w-[220px] rounded-md border border-gray-200 bg-white shadow-lg z-50'>
+                      <ul className='py-2'>
+                        {link.children.map((child) => (
+                          <li key={child.href}>
+                            <Link
+                              href={child.href}
+                              className='block px-4 py-2.5 text-sm text-black hover:bg-gray-100 transition-colors'
+                            >
+                              {child.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </div>
+
       {/* Mobile Navigation */}
       <div className='md:hidden border-t border-gray-200 bg-white'>
         <div className='container mx-auto px-4 py-2'>
+          {/* Mobile Search */}
+          <form action='/search' method='get' className='mb-3'>
+            <div className='relative w-full'>
+              <input
+                name='keyword'
+                type='text'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder='Search products...'
+                className='w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent'
+              />
+              <Search className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400' />
+            </div>
+          </form>
           <nav>
             <ul className='flex flex-col gap-2'>
               {links.map((link) => (
