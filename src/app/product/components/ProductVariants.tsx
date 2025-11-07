@@ -3,6 +3,7 @@
 import AddToCartButton from '@/app/components/AddToCartButton';
 import { formatCurrency } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import ProductTags from './ProductTags';
 
 interface Props {
   product: any;
@@ -129,6 +130,7 @@ export default function ProductVariants({ product }: Props) {
             </span>
           </span>
         </div>
+        <ProductTags product={product} />
       </div>
 
       {/* Add to Cart Section */}
