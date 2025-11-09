@@ -16,7 +16,7 @@ import { PopoverClose } from '@radix-ui/react-popover';
 import { Search, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import UserMenuDropdown from './UserMenuDropdown';
 import WarehouseSelect from './WarehouseSelect';
@@ -107,7 +107,7 @@ function PopoverCart() {
   );
 }
 
-export default function Header({
+function HeaderComponent({
   globalSettings,
 }: {
   globalSettings: GlobalSettingType;
@@ -339,5 +339,17 @@ export default function Header({
         </div>
       </div>
     </header>
+  );
+}
+
+export default function Header({
+  globalSettings,
+}: {
+  globalSettings: GlobalSettingType;
+}) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HeaderComponent globalSettings={globalSettings} />
+    </Suspense>
   );
 }

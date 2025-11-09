@@ -33,7 +33,7 @@ export default function SearchProductsResult({
 
   return (
     <>
-      <div className='grid grid-cols-6 xs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-4'>
+      <div className='grid grid-cols-6 xs:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'>
         {products?.map((product: any) => (
           <ProductBlock key={product.id} product={product} />
         ))}

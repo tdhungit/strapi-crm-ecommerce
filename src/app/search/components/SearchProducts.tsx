@@ -14,6 +14,11 @@ export default function SearchProducts({
 }) {
   const [params, setParams] = useState<SearchProductType | null>(null);
 
+  const updateParams = (newParams: SearchProductType) => {
+    newParams.keyword = searchParams.keyword;
+    setParams(newParams);
+  };
+
   useEffect(() => {
     if (!searchParams.keyword) return;
 
@@ -26,10 +31,10 @@ export default function SearchProducts({
 
   return (
     <div className='flex'>
-      <div className='w-[200px]'>
-        <SearchProductsParams initParams={params} />
+      <div className='w-[260px]'>
+        <SearchProductsParams onChange={updateParams} />
       </div>
-      <div>
+      <div className='ml-4'>
         <SearchProductsResult params={params} />
       </div>
     </div>
