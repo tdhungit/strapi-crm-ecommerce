@@ -24,19 +24,21 @@ export default function ProductSummaryModal({
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    if (basicProduct?.id) {
-      const date = dayjs().format('YYYY-MM-DD');
-      ApiService.request('GET', `/sale-products/${basicProduct.id}`, {
-        date,
-      })
-        .then((product) => {
-          setProduct(product);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    if (!basicProduct?.id || !open) {
+      return;
     }
-  }, [basicProduct]);
+
+    const date = dayjs().format('YYYY-MM-DD');
+    ApiService.request('GET', `/sale-products/${basicProduct.id}`, {
+      date,
+    })
+      .then((product) => {
+        setProduct(product);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [basicProduct, open]);
 
   useEffect(() => {
     if (product?.product_variants?.[0]) {
