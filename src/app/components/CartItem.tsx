@@ -82,9 +82,11 @@ export default function CartItem({
                     key={attr.id}
                     className='flex items-center text-sm text-gray-600'
                   >
-                    <span className='font-medium'>
-                      {attr.product_attribute.name}:
-                    </span>
+                    {attr.product_attribute && (
+                      <span className='font-medium'>
+                        {attr.product_attribute.name}:
+                      </span>
+                    )}
                     <span className='ml-1'>{attr.attribute_value}</span>
                   </div>
                 ))}

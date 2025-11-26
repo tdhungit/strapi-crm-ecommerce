@@ -65,8 +65,10 @@ export default function ProductVariants({ product }: Props) {
                 <div className='flex gap-2'>
                   {variant.product_variant_attributes.map((attribute: any) => (
                     <span key={attribute.id} className='text-sm'>
-                      {attribute.product_attribute?.name || 'Unknown'}:{' '}
-                      {attribute.attribute_value || 'Unknown'}
+                      {attribute.product_attribute && (
+                        <span>{attribute.product_attribute.name}: </span>
+                      )}
+                      {attribute.attribute_value}
                     </span>
                   ))}
                 </div>
