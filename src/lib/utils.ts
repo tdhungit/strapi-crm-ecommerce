@@ -9,6 +9,9 @@ export function getMediaUrl(media: any) {
   if (!media?.url) {
     return 'https://placehold.co/64x64/jpg';
   }
+  if (media?.url?.startsWith('http')) {
+    return media?.url;
+  }
   return process.env.NEXT_PUBLIC_API_URL + media?.url;
 }
 
