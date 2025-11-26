@@ -39,7 +39,7 @@ export default function ProductVariants({ product }: Props) {
                 {formatCurrency(originalPrice)}
               </span>
               <span className='bg-red-100 text-red-800 text-sm font-medium px-2 py-1 rounded-full'>
-                Save {discount}%
+                Save {discount || 0}%
               </span>
             </>
           )}
@@ -65,8 +65,8 @@ export default function ProductVariants({ product }: Props) {
                 <div className='flex gap-2'>
                   {variant.product_variant_attributes.map((attribute: any) => (
                     <span key={attribute.id} className='text-sm'>
-                      {attribute.product_attribute.name}:{' '}
-                      {attribute.attribute_value}
+                      {attribute.product_attribute?.name || 'Unknown'}:{' '}
+                      {attribute.attribute_value || 'Unknown'}
                     </span>
                   ))}
                 </div>

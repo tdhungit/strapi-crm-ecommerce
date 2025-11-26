@@ -32,9 +32,27 @@ export default function ProductImages({
         }}
       >
         <CarouselContent>
-          {product?.photos?.map((photo: { id: number; url: string }) => (
+          {product?.photos?.length > 0 &&
+            product?.photos?.map((photo: { id: number; url: string }) => (
+              <CarouselItem
+                key={photo.id}
+                className='w-full'
+                style={{ height: height || 220, width: width || 220 }}
+              >
+                <Link
+                  href={`/product/${getProductSlug()}/${product.id}`}
+                  className='w-full h-full'
+                >
+                  <img
+                    src={getMediaUrl(photo)}
+                    alt='banner'
+                    className='w-full h-full'
+                  />
+                </Link>
+              </CarouselItem>
+            ))}
+          {product?.photos?.url && (
             <CarouselItem
-              key={photo.id}
               className='w-full'
               style={{ height: height || 220, width: width || 220 }}
             >
@@ -43,13 +61,13 @@ export default function ProductImages({
                 className='w-full h-full'
               >
                 <img
-                  src={getMediaUrl(photo)}
+                  src={getMediaUrl(product?.photos?.url)}
                   alt='banner'
                   className='w-full h-full'
                 />
               </Link>
             </CarouselItem>
-          ))}
+          )}
         </CarouselContent>
       </Carousel>
     </div>
