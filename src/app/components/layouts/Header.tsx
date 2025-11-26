@@ -123,7 +123,7 @@ function HeaderComponent({
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    ApiService.request('GET', '/product-categories/extra/tree')
+    ApiService.request('GET', '/product-categories/extra/tree?status=Active')
       .then((categories: any) => {
         const _links = [{ href: '/', label: 'Home' }];
         if (categories?.length > 0) {

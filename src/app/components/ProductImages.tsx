@@ -35,7 +35,7 @@ export default function ProductImages({
           {product?.photos?.length > 0 &&
             product?.photos?.map((photo: { id: number; url: string }) => (
               <CarouselItem
-                key={photo.id}
+                key={photo.id || photo.url || Math.random()}
                 className='w-full'
                 style={{ height: height || 220, width: width || 220 }}
               >
